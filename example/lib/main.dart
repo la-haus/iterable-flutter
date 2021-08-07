@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iterable_flutter/iterable_flutter.dart';
 
@@ -20,6 +20,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     initPlatformState();
+    initIterable();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -42,6 +43,10 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _platformVersion = platformVersion;
     });
+  }
+
+  Future<void> initIterable() async {
+    await IterableFlutter.init('myApiKey');
   }
 
   @override
