@@ -39,6 +39,14 @@ class IterableFlutterPlugin: FlutterPlugin, MethodCallHandler {
               initialize(call.arguments as String)
               result.success(null)
           }
+          "setEmail" -> {
+            IterableApi.getInstance().setEmail(call.arguments as String)
+            result.success(null)
+          }
+          "setUserId" -> {
+            IterableApi.getInstance().setUserId(call.arguments as String)
+            result.success(null)
+          }
           else -> {
               result.notImplemented()
           }
