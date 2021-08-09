@@ -54,6 +54,14 @@ class _MyAppState extends State<MyApp> {
     await IterableFlutter.init(apiKey);
   }
 
+  Future<void> setEmail(String email) async {
+    await IterableFlutter.setEmail(email);
+  }
+
+  Future<void> setUserId(String userId) async {
+    await IterableFlutter.setUserId(userId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
