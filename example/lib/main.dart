@@ -36,6 +36,10 @@ class _MyAppState extends State<MyApp> {
     await IterableFlutter.setUserId(userId);
   }
 
+  Future<void> track(String event) async {
+    await IterableFlutter.track(event);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,7 +55,10 @@ class _MyAppState extends State<MyApp> {
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (value) => setUserId(value.toString()),
+                  onFieldSubmitted: (value) {
+                    setUserId(value.toString());
+                    track('init_tracking_event');
+                  },
                   decoration: InputDecoration(
                     border: UnderlineInputBorder(),
                     labelText: 'User Id:',
