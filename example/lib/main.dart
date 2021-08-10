@@ -41,9 +41,26 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Flutter Iterable Example App'),
         ),
-        body: Center(),
+        body: Center(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 48, right: 96),
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (value) => setUserId(value.toString()),
+                  decoration: InputDecoration(
+                    border: UnderlineInputBorder(),
+                    labelText: 'User Id:',
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
