@@ -44,6 +44,10 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         IterableApi.getInstance().setUserId(call.arguments as String)
         result.success(null)
       }
+      "track" -> {
+        IterableApi.getInstance().track(call.arguments as String)
+        result.success(null)
+      }
       else -> {
         result.notImplemented()
       }
