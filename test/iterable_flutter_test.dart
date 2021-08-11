@@ -40,40 +40,28 @@ void main() {
   test('init', () async {
     await IterableFlutter.init(apiKey);
     expect(calledMethod, <Matcher>[
-      isMethodCall(
-        'init',
-        arguments: apiKey,
-      ),
+      isMethodCall('init', arguments: apiKey),
     ]);
   });
 
   test('setEmail', () async {
     await IterableFlutter.setEmail(email);
     expect(calledMethod, <Matcher>[
-      isMethodCall(
-        'setEmail',
-        arguments: email,
-      ),
+      isMethodCall('setEmail', arguments: email),
     ]);
   });
 
   test('setUserId', () async {
     await IterableFlutter.setUserId(userId);
     expect(calledMethod, <Matcher>[
-      isMethodCall(
-        'setUserId',
-        arguments: userId,
-      ),
+      isMethodCall('setUserId', arguments: userId),
     ]);
   });
 
   test('track', () async {
     await IterableFlutter.track(event);
     expect(calledMethod, <Matcher>[
-      isMethodCall(
-        'track',
-        arguments: event,
-      ),
+      isMethodCall('track', arguments: event),
     ]);
   });
 }
