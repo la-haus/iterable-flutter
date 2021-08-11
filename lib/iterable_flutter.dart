@@ -22,4 +22,8 @@ class IterableFlutter {
   static Future<void> track(String event) async {
     await _channel.invokeMethod('track', event);
   }
+
+  static Future<void> registerForPush() async {
+    await _channel.invokeMethod('registerForPush');
+  }
 }

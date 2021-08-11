@@ -48,6 +48,10 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         IterableApi.getInstance().track(call.arguments as String)
         result.success(null)
       }
+      "registerForPush" -> {
+        IterableApi.getInstance().registerForPush()
+        result.success(null)
+      }
       else -> {
         result.notImplemented()
       }

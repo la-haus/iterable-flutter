@@ -26,6 +26,8 @@ void main() {
           return null;
         case 'track':
           return null;
+        case 'registerForPush':
+          return null;
         default:
           return null;
       }
@@ -62,6 +64,13 @@ void main() {
     await IterableFlutter.track(event);
     expect(calledMethod, <Matcher>[
       isMethodCall('track', arguments: event),
+    ]);
+  });
+
+  test('registerForPush', () async {
+    await IterableFlutter.registerForPush();
+    expect(calledMethod, <Matcher>[
+      isMethodCall('registerForPush', arguments: null),
     ]);
   });
 }
