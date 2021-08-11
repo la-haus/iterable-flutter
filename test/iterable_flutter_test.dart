@@ -9,7 +9,18 @@ void main() {
 
   setUp(() {
     channel.setMockMethodCallHandler((MethodCall methodCall) async {
-      return '42';
+      switch (methodCall.method) {
+        case 'init':
+          return null;
+        case 'setEmail':
+          return null;
+        case 'setUserId':
+          return null;
+        case 'track':
+          return null;
+        default:
+          return null;
+      }
     });
   });
 
@@ -17,7 +28,9 @@ void main() {
     channel.setMockMethodCallHandler(null);
   });
 
-  /*test('getPlatformVersion', () async {
-    expect(await IterableFlutter.platformVersion, '42');
-  });*/
+  test('init', () async {
+    await IterableFlutter.init('apiKey');
+    //TODO: expect
+    //expect(actual, matcher);
+  });
 }
