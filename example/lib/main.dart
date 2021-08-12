@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (value) {
                     setUserId(value.toString());
-                    track('init_tracking_event');
+                    track('init_with_firebase');
                   },
                   decoration: InputDecoration(
                     border: UnderlineInputBorder(),
