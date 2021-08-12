@@ -24,20 +24,37 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initIterable() async {
-    var apiKey = FlutterConfig.get('ITERABLE_API_KEY');
-    await IterableFlutter.init(apiKey);
+    final apiKey = FlutterConfig.get('ITERABLE_API_KEY');
+    final pushIntegrationName =
+        FlutterConfig.get('ITERABLE_PUSH_INTEGRATION_NAME');
+
+    return await IterableFlutter.initialize(
+      apiKey: apiKey,
+      pushIntegrationName: pushIntegrationName,
+    );
   }
 
+  /// Don't set an email and user ID in the same session.
+  /// Doing so causes the SDK to treat them as different users.
   Future<void> setEmail(String email) async {
     await IterableFlutter.setEmail(email);
   }
 
+  /// Don't set an email and user ID in the same session.
+  /// Doing so causes the SDK to treat them as different users.
   Future<void> setUserId(String userId) async {
     await IterableFlutter.setUserId(userId);
   }
 
   Future<void> track(String event) async {
     await IterableFlutter.track(event);
+  }
+
+  /// Call it to register device for current user if calling setEmail or
+  /// setUserId after the app has already launched
+  /// (for example, when a new user logs in)
+  Future<void> registerForPush() async {
+    await IterableFlutter.registerForPush();
   }
 
   @override
@@ -53,15 +70,16 @@ class _MyAppState extends State<MyApp> {
               Padding(
                 padding: EdgeInsets.only(left: 48, right: 96),
                 child: TextFormField(
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (value) {
-                    setUserId(value.toString());
-                    track('init_with_firebase');
+                    setEmail(value);
+                    registerForPush();
+                    track('init_with_push_integration_name_param');
                   },
                   decoration: InputDecoration(
                     border: UnderlineInputBorder(),
-                    labelText: 'User Id:',
+                    labelText: 'Email:',
                   ),
                 ),
               ),

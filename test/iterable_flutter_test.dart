@@ -7,6 +7,7 @@ void main() {
 
   const MethodChannel channel = MethodChannel('iterable_flutter');
   const String apiKey = 'apiKey';
+  const String pushIntegrationName = 'pushIntegrationName';
   const String email = 'my@email.com';
   const String userId = '11111';
   const String event = 'my_event';
@@ -39,10 +40,16 @@ void main() {
     channel.setMockMethodCallHandler(null);
   });
 
-  test('init', () async {
-    await IterableFlutter.init(apiKey);
+  test('initialize', () async {
+    await IterableFlutter.initialize(
+      apiKey: apiKey,
+      pushIntegrationName: pushIntegrationName,
+    );
     expect(calledMethod, <Matcher>[
-      isMethodCall('init', arguments: apiKey),
+      isMethodCall(
+        'initialize',
+        arguments: {apiKey: apiKey, pushIntegrationName: pushIntegrationName},
+      ),
     ]);
   });
 

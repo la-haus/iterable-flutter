@@ -14,6 +14,9 @@ import io.flutter.plugin.common.MethodChannel.Result
 
 /** IterableFlutterPlugin */
 class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
+
+  private val methodChannelName = "iterable_flutter"
+
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -25,15 +28,20 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     context = flutterPluginBinding.applicationContext
 
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "iterable_flutter")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, methodChannelName)
     channel.setMethodCallHandler(this)
 
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
-      "init" -> {
-        initialize(call.arguments as String)
+      "initialize" -> {
+        val apiKey = call.argument<String>("apiKey") ?: ""
+        val pushIntegrationName = call.argument<String>("pushIntegrationName") ?: ""
+
+        if (apiKey.isNotEmpty() && pushIntegrationName.isNotEmpty()) {
+          initialize(apiKey, pushIntegrationName)
+        }
         result.success(null)
       }
       "setEmail" -> {
@@ -58,8 +66,12 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
     }
   }
 
-  private fun initialize(apiKey: String) {
-    val config = IterableConfig.Builder().setLogLevel(Log.DEBUG).build()
+  private fun initialize(apiKey: String, pushIntegrationName: String) {
+    val config = IterableConfig.Builder()
+        .setLogLevel(Log.DEBUG)
+        .setPushIntegrationName(pushIntegrationName)
+        .setAutoPushRegistration(true)
+        .build()
     IterableApi.initialize(context, apiKey, config)
   }
 
