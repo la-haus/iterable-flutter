@@ -1,14 +1,21 @@
-
 import 'dart:async';
 
 import 'package:flutter/services.dart';
 
 class IterableFlutter {
-  static const MethodChannel _channel =
-      const MethodChannel('iterable_flutter');
+  static const MethodChannel _channel = const MethodChannel('iterable_flutter');
 
-  static Future<void> init(String apiKey) async {
-    await _channel.invokeMethod('init', apiKey);
+  static Future<void> initialize({
+    required String apiKey,
+    required String pushIntegrationName,
+  }) async {
+    await _channel.invokeMethod(
+      'initialize',
+      {
+        'apiKey': apiKey,
+        'pushIntegrationName': pushIntegrationName,
+      },
+    );
   }
 
   static Future<void> setEmail(String email) async {
