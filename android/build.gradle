@@ -39,5 +39,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation 'com.iterable:iterableapi:3.3.1'
-    /*implementation 'com.google.firebase:firebase-messaging:22.0.0'*/
+    implementation 'com.google.firebase:firebase-messaging:22.0.0'
 }
