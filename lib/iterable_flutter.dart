@@ -33,4 +33,8 @@ class IterableFlutter {
   static Future<void> registerForPush() async {
     await _channel.invokeMethod('registerForPush');
   }
+
+  static Future<void> signOut() async {
+    await _channel.invokeMethod('signOut');
+  }
 }
