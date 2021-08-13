@@ -45,11 +45,13 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         result.success(null)
       }
       "setEmail" -> {
-        IterableApi.getInstance().setEmail(call.arguments as String)
+        val userEmail = call.arguments as String
+        IterableApi.getInstance().setEmail(userEmail)
         result.success(null)
       }
       "setUserId" -> {
         IterableApi.getInstance().setUserId(call.arguments as String)
+        IterableApi.getInstance().registerForPush()
         result.success(null)
       }
       "track" -> {
@@ -58,6 +60,10 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
       }
       "registerForPush" -> {
         IterableApi.getInstance().registerForPush()
+        result.success(null)
+      }
+      "signOut" -> {
+        IterableApi.getInstance().disablePush();
         result.success(null)
       }
       else -> {
