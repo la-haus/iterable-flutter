@@ -29,6 +29,8 @@ void main() {
           return null;
         case 'registerForPush':
           return null;
+        case 'signOut':
+          return null;
         default:
           return null;
       }
