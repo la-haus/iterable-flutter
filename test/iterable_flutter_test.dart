@@ -80,4 +80,11 @@ void main() {
       isMethodCall('registerForPush', arguments: null),
     ]);
   });
+
+  test('signOut', () async {
+    await IterableFlutter.signOut();
+    expect(calledMethod, <Matcher>[
+      isMethodCall('signOut', arguments: null),
+    ]);
+  });
 }
