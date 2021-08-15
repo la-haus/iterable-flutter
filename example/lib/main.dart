@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (value) {
                     setEmail(value);
-                    track('init_register_push_set_email');
+                    track('demo_event_tracking');
                   },
                   decoration: InputDecoration(
                     border: UnderlineInputBorder(),

@@ -47,6 +47,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
       "setEmail" -> {
         val userEmail = call.arguments as String
         IterableApi.getInstance().setEmail(userEmail)
+        IterableApi.getInstance().registerForPush()
         result.success(null)
       }
       "setUserId" -> {
@@ -63,7 +64,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         result.success(null)
       }
       "signOut" -> {
-        IterableApi.getInstance().disablePush();
+        IterableApi.getInstance().disablePush()
         result.success(null)
       }
       else -> {
@@ -76,7 +77,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
     val config = IterableConfig.Builder()
         .setLogLevel(Log.DEBUG)
         .setPushIntegrationName(pushIntegrationName)
-        .setAutoPushRegistration(true)
+        .setAutoPushRegistration(false)
         .build()
     IterableApi.initialize(context, apiKey, config)
   }
