@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "158490276089",
+    "project_id": "spike-iterable",
+    "storage_bucket": "spike-iterable.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158490276089:android:d375b503c30bbd3f7f7228",
+        "android_client_info": {
+          "package_name": "com.lahaus.iterable_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "158490276089-5ehvov1bi7ngog0eu495r1rdrbnhus7b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVY-y2VlJWLWhXpoc-7icN8pnmCVdaHw8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "158490276089-5ehvov1bi7ngog0eu495r1rdrbnhus7b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158490276089:android:894dce1f74f4635a7f7228",
+        "android_client_info": {
+          "package_name": "com.lahaus.iterable_flutter_example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "158490276089-5ehvov1bi7ngog0eu495r1rdrbnhus7b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVY-y2VlJWLWhXpoc-7icN8pnmCVdaHw8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "158490276089-5ehvov1bi7ngog0eu495r1rdrbnhus7b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
