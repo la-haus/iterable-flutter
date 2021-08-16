@@ -1,6 +1,6 @@
 # Iterable Plugin
 
-Flutter plugin to support Android and iOS push notifications from (https://iterable.com/)[https://iterable.com/].
+Flutter plugin to support Android and iOS push notifications from [https://iterable.com/](https://iterable.com/).
 
 ## Usage
 To use this plugin, add `iterable_flutter` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
