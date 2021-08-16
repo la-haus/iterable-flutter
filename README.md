@@ -15,8 +15,8 @@ To use this plugin, add `iterable_flutter` as a [dependency in your pubspec.yaml
 | `signOut` | X | |
 
 ## Installation
-First, create a mobile API Key from (Iterable)[https://support.iterable.com/hc/en-us/articles/360043464871#creating-api-keys].
-Then, also from Iterable, (create a mobile app)[https://support.iterable.com/hc/en-us/articles/115000331943#_2-create-a-mobile-app-in-iterable] and (assign a push integration)[https://support.iterable.com/hc/en-us/articles/115000331943#_3-assign-a-push-integration-to-the-mobile-app]
+First, create a mobile API Key from [Iterable](https://support.iterable.com/hc/en-us/articles/360043464871#creating-api-keys).
+Then, also from Iterable, [create a mobile app](https://support.iterable.com/hc/en-us/articles/115000331943#_2-create-a-mobile-app-in-iterable) and [assign a push integration](https://support.iterable.com/hc/en-us/articles/115000331943#_3-assign-a-push-integration-to-the-mobile-app)
 to it.
 Finally, add `iterable_flutter` as a plugin in `pubspec.yaml` file.
 
