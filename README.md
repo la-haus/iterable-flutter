@@ -1,15 +1,32 @@
-# iterable_flutter
+# Iterable Plugin
 
-A new flutter plugin project.
+Flutter plugin to support Android and iOS push notifications from (https://iterable.com/)[https://iterable.com/].
 
-## Getting Started
+## Usage
+To use this plugin, add `iterable_flutter` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+### Supported methods
+| Method | Android | iOS |
+|---|---|---|
+| `initialize` | X | |
+| `setEmail` | X | |
+| `setUserId` | X | |
+| `registerForPush` | X | |
+| `signOut` | X | |
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Installation
+First, create a mobile API Key from (Iterable)[https://support.iterable.com/hc/en-us/articles/360043464871#creating-api-keys].
+Then, also from Iterable, (create a mobile app)[https://support.iterable.com/hc/en-us/articles/115000331943#_2-create-a-mobile-app-in-iterable] and (assign a push integration)[https://support.iterable.com/hc/en-us/articles/115000331943#_3-assign-a-push-integration-to-the-mobile-app]
+to it.
+Finally, add `iterable_flutter` as a plugin in `pubspec.yaml` file.
 
+Once all of this is set up, call `initialize` from plugin, with Iterable's API_KEY and PUSH_INTEGRATION_NAME before identifying the user. The identification can be done either
+using `setEmail` or `setUserId` methods. Don't set an email and user ID in the same session, doing so causes the SDK to treat them as different users.
+
+Call `registerForPush` to register the device for current user if calling `setEmail` or `setUserId` after the app has already launched (for example, when a new user logs in).
+To unregister the device/user from push notifications, then call `signOut`.
+
+To track specific events, call `track` method.
+
+### Example
+***Example here***
