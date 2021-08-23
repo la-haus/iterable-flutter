@@ -3,6 +3,8 @@ package com.lahaus.iterable_flutter
 import android.content.Context
 import android.util.Log
 import androidx.annotation.NonNull
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.*
 import com.iterable.iterableapi.IterableApi
 import com.iterable.iterableapi.IterableConfig
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -10,6 +12,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import java.util.*
 
 
 /** IterableFlutterPlugin */
@@ -80,6 +83,19 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         .setAutoPushRegistration(false)
         .build()
     IterableApi.initialize(context, apiKey, config)
+
+    FirebaseMessaging.getInstance().token
+        .addOnCompleteListener(OnCompleteListener { task ->
+          if (!task.isSuccessful) {
+            Log.e("initialize error >>>", "Fetching FCM registration token failed", task.exception)
+            return@OnCompleteListener
+          }
+
+          // Get new FCM registration token
+          val token = task.result
+
+          Log.e("initialize token >>>", "Fetching FCM registration token $token")
+        })
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
