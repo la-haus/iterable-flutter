@@ -13,6 +13,8 @@ To use this plugin, add `iterable_flutter` as a [dependency in your pubspec.yaml
 | `setUserId` | X | |
 | `registerForPush` | X | |
 | `signOut` | X | |
+| `track` | X | |
+| `handleMessage` | | |
 
 ## Installation
 First, create a mobile API Key from [Iterable](https://support.iterable.com/hc/en-us/articles/360043464871#creating-api-keys).
