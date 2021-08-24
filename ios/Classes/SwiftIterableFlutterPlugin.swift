@@ -10,15 +10,22 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    let args = getPropertiesFromArguments(call.arguments)
-    
     switch (call.method) {
     case "initialize":
+        let args = getPropertiesFromArguments(call.arguments)
+        
         let apiKey = args["apiKey"] as! String
         let pushIntegrationName = args["pushIntegrationName"] as! String
         
         initialize(apiKey, pushIntegrationName)
         result(nil)
+    case "setEmail":
+        let email = call.arguments as! String
+        IterableAPI.email = email
+    case "setUserId":
+        let userId = call.arguments as! String
+        IterableAPI.userId = userId
+        IterableAPI.track(event: "setUserId iOS")
     default:
         result(FlutterMethodNotImplemented)
     }
