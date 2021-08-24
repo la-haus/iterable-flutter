@@ -22,12 +22,18 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
     case "setEmail":
         let email = call.arguments as! String
         IterableAPI.email = email
+        
+        result(nil)
     case "setUserId":
         let userId = call.arguments as! String
         IterableAPI.userId = userId
+        
+        result(nil)
     case "track":
         let eventName = call.arguments as! String
         IterableAPI.track(event: eventName)
+        
+        result(nil)
     default:
         result(FlutterMethodNotImplemented)
     }
