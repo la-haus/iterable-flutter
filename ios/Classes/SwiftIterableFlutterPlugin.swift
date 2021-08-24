@@ -25,7 +25,9 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
     case "setUserId":
         let userId = call.arguments as! String
         IterableAPI.userId = userId
-        IterableAPI.track(event: "setUserId iOS")
+    case "track":
+        let eventName = call.arguments as! String
+        IterableAPI.track(event: eventName)
     default:
         result(FlutterMethodNotImplemented)
     }
