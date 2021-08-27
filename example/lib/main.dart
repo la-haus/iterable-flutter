@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
@@ -25,8 +26,9 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> initIterable() async {
     final apiKey = FlutterConfig.get('ITERABLE_API_KEY');
-    final pushIntegrationName =
-        FlutterConfig.get('ITERABLE_PUSH_INTEGRATION_NAME');
+    final pushIntegrationName = Platform.isAndroid
+        ? FlutterConfig.get('ITERABLE_PUSH_INTEGRATION_NAME_ANDROID')
+        : FlutterConfig.get('ITERABLE_PUSH_INTEGRATION_NAME_IOS');
 
     return await IterableFlutter.initialize(
       apiKey: apiKey,

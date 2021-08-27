@@ -1,12 +1,15 @@
 import Flutter
 import UIKit
 import IterableSDK
+import UserNotifications
 
 public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "iterable_flutter", binaryMessenger: registrar.messenger())
     let instance = SwiftIterableFlutterPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
+    //appDelegate
+    registrar.addApplicationDelegate(instance)
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -44,6 +47,11 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
         config.pushIntegrationName = pushIntegrationName
         config.autoPushRegistration = true
         IterableAPI.initialize(apiKey: apiKey, config: config)
+    
+        UNUserNotificationCenter.current()
+            .requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
+                print("===== Permission granted: \(granted)")
+        }
     }
     
     private func getPropertiesFromArguments(_ callArguments: Any?) -> [String: Any] {
@@ -52,34 +60,13 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
             }
             return [:];
         }
-}
-
-extension SwiftIterableFlutterPlugin: IterableURLDelegate {
-
-    public func handle(iterableURL url: URL, inContext context: IterableActionContext) -> Bool {
-        return true
-    }
-
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-              let webpageURL = userActivity.webpageURL else {
-            return false
-        }
-
-        return IterableAPI.handle(universalLink: webpageURL)
-    }
-
+    
     public func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print("======= deviceToken \(deviceToken)")
-        
         IterableAPI.register(token: deviceToken)
-    }
-
-    public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        IterableAppIntegration.application(application, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
-    }
-
-    public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        return true
+        
+        let tokenParts = deviceToken.map { data -> String in
+            return String(format: "%02.2hhx", data)
+        }
+        print("===== Token: \(tokenParts.joined())")
     }
 }
