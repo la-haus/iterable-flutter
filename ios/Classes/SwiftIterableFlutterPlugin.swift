@@ -47,11 +47,6 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
         config.pushIntegrationName = pushIntegrationName
         config.autoPushRegistration = true
         IterableAPI.initialize(apiKey: apiKey, config: config)
-    
-        UNUserNotificationCenter.current()
-            .requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
-                print("===== Permission granted: \(granted)")
-        }
     }
     
     private func getPropertiesFromArguments(_ callArguments: Any?) -> [String: Any] {
@@ -69,4 +64,28 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
         }
         print("===== Token: \(tokenParts.joined())")
     }
+    
+    public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
+        registerForPushNotifications()
+        return true
+    }
+    
+    func registerForPushNotifications() {
+        UNUserNotificationCenter.current()
+          .requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, error in
+            print("===== Permission granted: \(granted)")
+            guard granted else { return }
+            self?.getNotificationSettings()
+          }
+      }
+    
+    func getNotificationSettings() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+          print("===== Notification settings: \(settings)")
+          guard settings.authorizationStatus == .authorized else { return }
+          DispatchQueue.main.async {
+            UIApplication.shared.registerForRemoteNotifications()
+          }
+        }
+      }
 }
