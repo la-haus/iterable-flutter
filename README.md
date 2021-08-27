@@ -8,12 +8,12 @@ To use this plugin, add `iterable_flutter` as a [dependency in your pubspec.yaml
 ### Supported methods
 | Method | Android | iOS |
 |---|---|---|
-| `initialize` | X | |
-| `setEmail` | X | |
-| `setUserId` | X | |
-| `registerForPush` | X | |
-| `signOut` | X | |
-| `track` | X | |
+| `initialize` | X | X |
+| `setEmail` | X | X |
+| `setUserId` | X | X |
+| `registerForPush` | X | N/A |
+| `signOut` | X | X |
+| `track` | X | X |
 | `handleMessage` | | |
 
 ## Installation
