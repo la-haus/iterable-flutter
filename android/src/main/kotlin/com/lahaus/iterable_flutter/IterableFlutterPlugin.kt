@@ -1,12 +1,12 @@
 package com.lahaus.iterable_flutter
 
 import android.content.Context
+import android.os.Bundle
 import android.util.Log
 import androidx.annotation.NonNull
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.*
-import com.iterable.iterableapi.IterableApi
-import com.iterable.iterableapi.IterableConfig
+import com.iterable.iterableapi.*
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -37,6 +37,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+
     when (call.method) {
       "initialize" -> {
         val apiKey = call.argument<String>("apiKey") ?: ""
@@ -81,6 +82,10 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         .setLogLevel(Log.DEBUG)
         .setPushIntegrationName(pushIntegrationName)
         .setAutoPushRegistration(false)
+        .setCustomActionHandler { _ , _ ->
+          notifyOpenPushNotification()
+          true
+        }
         .build()
     IterableApi.initialize(context, apiKey, config)
 
@@ -96,6 +101,27 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
           Log.e("initialize token >>>", "Fetching FCM registration token $token")
         })
+  }
+
+  private fun notifyOpenPushNotification(){
+    val bundleData = IterableApi.getInstance().payloadData
+    channel.invokeMethod("openedNotificationHandler", bundleToMap(bundleData))
+  }
+
+  fun bundleToMap(extras: Bundle?): Map<String, String?> {
+    return extras?.let { bundle ->
+      val map: MutableMap<String, String?> = HashMap()
+      val ks = bundle.keySet()
+      val iterator: Iterator<String> = ks.iterator()
+      while (iterator.hasNext()) {
+        val key = iterator.next()
+        map[key] = bundle.getString(key)
+      }
+      return map
+    }?: run {
+      return mapOf()
+    }
+
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
