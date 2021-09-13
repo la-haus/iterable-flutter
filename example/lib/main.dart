@@ -22,6 +22,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     initIterable();
+    listener();
   }
 
   Future<void> initIterable() async {
@@ -59,6 +60,20 @@ class _MyAppState extends State<MyApp> {
     await IterableFlutter.registerForPush();
   }
 
+  Map pushData = {};
+
+  void listener() {
+    IterableFlutter.setNotificationOpenedHandler((openedResult) {
+      setPushData(openedResult);
+    });
+  }
+
+  void setPushData(Map newData) {
+    setState(() {
+      pushData = newData;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -84,6 +99,10 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ),
               ),
+              Text("Body: ${pushData['body']}"),
+              Text("Title: ${pushData['title']}"),
+              Text("Type: ${pushData['type']}"),
+              Text("name: ${pushData['name']}"),
             ],
           ),
         ),
