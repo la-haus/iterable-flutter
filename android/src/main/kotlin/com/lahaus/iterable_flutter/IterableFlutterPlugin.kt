@@ -83,7 +83,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         .setPushIntegrationName(pushIntegrationName)
         .setAutoPushRegistration(false)
         .setCustomActionHandler { _ , _ ->
-          notifyOpenPushNotification()
+          notifyPushNotificationOpened()
           true
         }
         .build()
@@ -103,7 +103,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         })
   }
 
-  private fun notifyOpenPushNotification(){
+  private fun notifyPushNotificationOpened(){
     val bundleData = IterableApi.getInstance().payloadData
     channel.invokeMethod("openedNotificationHandler", bundleToMap(bundleData))
   }
@@ -111,8 +111,8 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
   fun bundleToMap(extras: Bundle?): Map<String, String?> {
     return extras?.let { bundle ->
       val map: MutableMap<String, String?> = HashMap()
-      val ks = bundle.keySet()
-      val iterator: Iterator<String> = ks.iterator()
+      val keySetValue = bundle.keySet()
+      val iterator: Iterator<String> = keySetValue.iterator()
       while (iterator.hasNext()) {
         val key = iterator.next()
         map[key] = bundle.getString(key)
