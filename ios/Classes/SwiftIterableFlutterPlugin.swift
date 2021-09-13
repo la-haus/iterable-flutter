@@ -3,7 +3,7 @@ import UIKit
 import IterableSDK
 import UserNotifications
 
-public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
+public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotificationCenterDelegate {
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "iterable_flutter", binaryMessenger: registrar.messenger())
     let instance = SwiftIterableFlutterPlugin()
@@ -88,4 +88,39 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
           }
         }
       }
+    
+    /*func application(_ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+      guard let aps = userInfo["aps"] as? [String: AnyObject] else {
+        completionHandler(.failed)
+        return
+      }
+        print("===== aps: \(aps)")
+    }*/
+    
+    public func userNotificationCenter(_ center: UNUserNotificationCenter,
+            willPresent notification: UNNotification,
+            withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        guard let aps = notification.request.content.userInfo["aps"] as? [String: AnyObject] else {
+            completionHandler([.badge, .sound])
+            return
+        }
+        print("===== aps: \(aps)")
+    }
+
+    public func userNotificationCenter(_ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        let userInfo = response.notification.request.content.userInfo
+        guard userInfo["aps"] != nil else {
+            return
+        }
+        print("===== userInfo: \(userInfo)")
+        
+        /*IterableAppIntegration.userNotificationCenter(center, didReceive: response, withCompletionHandler: completionHandler)
+        }*/
+        completionHandler()
+    }
 }
