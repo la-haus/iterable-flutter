@@ -19,7 +19,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  void initState()  {
+  void initState() {
     super.initState();
     initIterable();
     listener();
@@ -60,18 +60,18 @@ class _MyAppState extends State<MyApp> {
     await IterableFlutter.registerForPush();
   }
 
-  Map data = {};
+  Map pushData = {};
 
-   void listener() {
-     IterableFlutter.setNotificationOpenedHandler((openedResult) {
-       setData(openedResult);
-     });
+  void listener() {
+    IterableFlutter.setNotificationOpenedHandler((openedResult) {
+      setPushData(openedResult);
+    });
   }
 
-  void setData(Map newData){
-     setState(() {
-       data = newData;
-     });
+  void setPushData(Map newData) {
+    setState(() {
+      pushData = newData;
+    });
   }
 
   @override
@@ -99,10 +99,10 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ),
               ),
-              Text("Body: ${data['body']}"),
-              Text("Title: ${data['title']}"),
-              Text("Type: ${data['type']}"),
-              Text("name: ${data['name']}"),
+              Text("Body: ${pushData['body']}"),
+              Text("Title: ${pushData['title']}"),
+              Text("Type: ${pushData['type']}"),
+              Text("name: ${pushData['name']}"),
             ],
           ),
         ),
