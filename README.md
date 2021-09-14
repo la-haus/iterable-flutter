@@ -12,7 +12,7 @@ To use this plugin, add `iterable_flutter` as a [dependency in your pubspec.yaml
 | `setEmail` | X | X |
 | `setUserId` | X | X |
 | `registerForPush` | X | N/A |
-| `signOut` | X | X |
+| `signOut` | X | |
 | `track` | X | X |
 | `setNotificationOpenedHandler` | X | |
 
