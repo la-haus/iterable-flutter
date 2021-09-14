@@ -83,7 +83,7 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
     }
     
     public func userNotificationCenter(_: UNUserNotificationCenter, willPresent _: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.alert])
+        completionHandler([.badge, .sound, .alert])
     }
     
     public func userNotificationCenter(_ center: UNUserNotificationCenter,
