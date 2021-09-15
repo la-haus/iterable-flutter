@@ -32,3 +32,28 @@ To track specific events, call `track` method.
 
 ### Example
 ***Example here***
+
+### Usage
+
+Listening when user open notification 
+-------------------
+You must call the method setNotificationOpenedHandler where it will work as a callback, 
+there you will receive the info that will bring the push, which is of type Map
+
+
+```dart
+// For a simple example:
+class _MyAppState extends State<MyApp> {
+  
+  @override
+  void initState() {
+    super.initState();
+    initIterable();
+    //You remember before call IterableFlutter.initialize
+    IterableFlutter.setNotificationOpenedHandler((pushData) {
+      print("Push: $pushData");
+    });
+  }
+  
+}
+```
