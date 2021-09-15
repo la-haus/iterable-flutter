@@ -89,4 +89,32 @@ void main() {
       isMethodCall('signOut', arguments: null),
     ]);
   });
+
+  test("openedNotificationHandler", () async {
+    IterableFlutter.initialize(
+      apiKey: apiKey,
+      pushIntegrationName: pushIntegrationName,
+    );
+
+    var pushData;
+    final contentBody = "Test body push";
+    final keyBody = "body";
+
+    IterableFlutter.setNotificationOpenedHandler((openedResultMap) {
+      pushData = openedResultMap;
+    });
+
+    await ServicesBinding.instance?.defaultBinaryMessenger
+        .handlePlatformMessage(
+            'iterable_flutter',
+            StandardMethodCodec().encodeMethodCall(
+              MethodCall(
+                'openedNotificationHandler',
+                {keyBody: contentBody},
+              ),
+            ),
+            (ByteData? data) {});
+
+    expect(contentBody, pushData[keyBody]);
+  });
 }
