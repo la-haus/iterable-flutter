@@ -56,7 +56,6 @@ class IterableFlutter {
         return "This data from flutter.....";
       default:
         return "Nothing";
-        break;
     }
   }
 }
