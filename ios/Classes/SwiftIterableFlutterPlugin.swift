@@ -91,7 +91,16 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
         IterableAppIntegration.userNotificationCenter(center, didReceive: response, withCompletionHandler: completionHandler)
         
-        let payload = response.notification.request.content.userInfo
+        let userInfo = response.notification.request.content.userInfo
+        let apsInfo = userInfo["aps"] as? [String: AnyObject]
+        let alertInfo = apsInfo!["alert"] as? [String: AnyObject]
+        
+        let payload = [
+            "title": alertInfo!["title"],
+            "body": alertInfo!["body"],
+            "additionalData": IterableAPI.lastPushPayload
+        ] as [String : Any]
+        
         SwiftIterableFlutterPlugin.channel?.invokeMethod("openedNotificationHandler", arguments: payload)
     }
 }

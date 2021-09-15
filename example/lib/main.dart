@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
     await IterableFlutter.registerForPush();
   }
 
-  Map pushData = {};
+  Map<dynamic, dynamic> pushData = {};
 
   void listener() {
     IterableFlutter.setNotificationOpenedHandler((openedResult) {
@@ -68,7 +68,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void setPushData(Map newData) {
+  void setPushData(Map<dynamic, dynamic> newData) {
     setState(() {
       pushData = newData;
     });
@@ -99,10 +99,11 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ),
               ),
+              Text("Push: $pushData"),
               Text("Body: ${pushData['body']}"),
               Text("Title: ${pushData['title']}"),
-              Text("Type: ${pushData['type']}"),
-              Text("name: ${pushData['name']}"),
+              Text("Type: ${pushData['additionalData']?['type']}"),
+              Text("name: ${pushData['additionalData']?['name']}"),
             ],
           ),
         ),
