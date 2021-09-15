@@ -79,36 +79,64 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
   private fun initialize(apiKey: String, pushIntegrationName: String) {
     val config = IterableConfig.Builder()
-        .setLogLevel(Log.DEBUG)
-        .setPushIntegrationName(pushIntegrationName)
-        .setAutoPushRegistration(false)
-        .setCustomActionHandler { _ , _ ->
-          notifyPushNotificationOpened()
-          true
-        }
-        .build()
+      .setLogLevel(Log.DEBUG)
+      .setPushIntegrationName(pushIntegrationName)
+      .setAutoPushRegistration(false)
+      .setCustomActionHandler { _, _ ->
+        notifyPushNotificationOpened()
+        true
+      }
+      .build()
     IterableApi.initialize(context, apiKey, config)
 
     FirebaseMessaging.getInstance().token
-        .addOnCompleteListener(OnCompleteListener { task ->
-          if (!task.isSuccessful) {
-            Log.e("initialize error >>>", "Fetching FCM registration token failed", task.exception)
-            return@OnCompleteListener
-          }
+      .addOnCompleteListener(OnCompleteListener { task ->
+        if (!task.isSuccessful) {
+          Log.e(
+            "initialize error >>>",
+            "Fetching FCM registration token failed",
+            task.exception
+          )
+          return@OnCompleteListener
+        }
 
-          // Get new FCM registration token
-          val token = task.result
+        // Get new FCM registration token
+        val token = task.result
 
-          Log.e("initialize token >>>", "Fetching FCM registration token $token")
-        })
+        Log.e("initialize token >>>", "Fetching FCM registration token $token")
+      })
   }
 
-  private fun notifyPushNotificationOpened(){
+
+  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    channel.setMethodCallHandler(null)
+  }
+
+  private fun notifyPushNotificationOpened() {
     val bundleData = IterableApi.getInstance().payloadData
-    channel.invokeMethod("openedNotificationHandler", bundleToMap(bundleData))
+    val pushData = clearPushData(bundleData)
+    channel.invokeMethod("openedNotificationHandler", pushData)
   }
 
-  fun bundleToMap(extras: Bundle?): Map<String, String?> {
+  private fun clearPushData(bundleData: Bundle?): Map<String, Any?> {
+
+    return bundleData?.let { bundle ->
+      val mapPushData = bundleToMap(bundle)
+      return buildPushDataMap(mapPushData)
+    } ?: run {
+      return mapOf()
+    }
+  }
+
+  private fun buildPushDataMap(mapPushData: Map<String, Any?>): Map<String, Any?> {
+    return mapOf(
+      "title" to mapPushData["title"],
+      "body" to mapPushData["body"],
+      "additionalData" to mapPushData
+    )
+  }
+
+  private fun bundleToMap(extras: Bundle?): Map<String, String?> {
     return extras?.let { bundle ->
       val map: MutableMap<String, String?> = HashMap()
       val keySetValue = bundle.keySet()
@@ -118,13 +146,9 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         map[key] = bundle.getString(key)
       }
       return map
-    }?: run {
+    } ?: run {
       return mapOf()
     }
 
-  }
-
-  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
   }
 }
