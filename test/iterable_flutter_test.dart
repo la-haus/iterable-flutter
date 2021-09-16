@@ -12,6 +12,9 @@ void main() {
   const String userId = '11111';
   const String event = 'my_event';
 
+  const contentBody = "Test body push";
+  const keyBody = "body";
+
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
@@ -96,9 +99,7 @@ void main() {
       pushIntegrationName: pushIntegrationName,
     );
 
-    var pushData;
-    final contentBody = "Test body push";
-    final keyBody = "body";
+    dynamic pushData;
 
     IterableFlutter.setNotificationOpenedHandler((openedResultMap) {
       pushData = openedResultMap;
@@ -107,8 +108,8 @@ void main() {
     await ServicesBinding.instance?.defaultBinaryMessenger
         .handlePlatformMessage(
             'iterable_flutter',
-            StandardMethodCodec().encodeMethodCall(
-              MethodCall(
+            const StandardMethodCodec().encodeMethodCall(
+              const MethodCall(
                 'openedNotificationHandler',
                 {keyBody: contentBody},
               ),
