@@ -119,7 +119,7 @@ class _MyAppState extends State<MyApp> {
             SizedBox(
               height: 20,
             ),
-            RaisedButton(
+            ElevatedButton(
                 onPressed: () {
                   navigationToSecondPage(pushData['additionalData']?['name']);
                 },
