@@ -14,7 +14,7 @@ To use this plugin, add `iterable_flutter` as a [dependency in your pubspec.yaml
 | `registerForPush` | X | N/A |
 | `signOut` | X | |
 | `track` | X | X |
-| `setNotificationOpenedHandler` | X | |
+| `setNotificationOpenedHandler` | X | X |
 
 ## Installation
 First, create a mobile API Key from [Iterable](https://support.iterable.com/hc/en-us/articles/360043464871#creating-api-keys).
@@ -32,3 +32,29 @@ To track specific events, call `track` method.
 
 ### Example
 ***Example here***
+
+### Usage
+
+Listening when a user opens a notification
+-------------------
+Call the method `setNotificationOpenedHandler`. It works as a callback, then the object that brings the push data is 
+received, which is of type `Map<String, Any>`
+
+
+
+```dart
+// For a simple example:
+class _MyAppState extends State<MyApp> {
+  
+  @override
+  void initState() {
+    super.initState();
+    initIterable();
+    //You remember before call IterableFlutter.initialize
+    IterableFlutter.setNotificationOpenedHandler((pushData) {
+      print("Push: $pushData");
+    });
+  }
+  
+}
+```
