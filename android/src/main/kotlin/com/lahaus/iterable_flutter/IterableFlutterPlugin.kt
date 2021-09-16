@@ -83,7 +83,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
       .setAutoPushRegistration(false)
       .setCustomActionHandler { _, _ ->
         notifyPushNotificationOpened()
-        true
+       false
       }
       .build()
     IterableApi.initialize(context, apiKey, config)
