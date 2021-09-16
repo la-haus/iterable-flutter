@@ -35,10 +35,11 @@ To track specific events, call `track` method.
 
 ### Usage
 
-Listening when user open notification 
+Listening when a user opens a notification
 -------------------
-You must call the method setNotificationOpenedHandler where it will work as a callback, 
-there you will receive the info that will bring the push, which is of type Map
+Call the method `setNotificationOpenedHandler`. It works as a callback, then the object that brings the push data is 
+received, which is of type `Map<String, Any>`
+
 
 
 ```dart
