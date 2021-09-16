@@ -4,12 +4,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:iterable_flutter/iterable_flutter.dart';
+import 'package:iterable_flutter_example/second_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Required by FlutterConfig
   await FlutterConfig.loadEnvVariables();
 
-  runApp(MyApp());
+  runApp(MaterialApp(
+    title: "App",
+    home: MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -72,40 +76,55 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       pushData = newData;
     });
+    var data = pushData['additionalData'];
+    if (data?['type'] == 'test') {
+      navigationToSecondPage(data?['name']);
+    }
+  }
+
+  void navigationToSecondPage(String name) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SecondPage(name)));
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Flutter Iterable Example App'),
-        ),
-        body: Center(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 48, right: 96),
-                child: TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (value) {
-                    setEmail(value);
-                    track('event_tracking_ios');
-                  },
-                  decoration: InputDecoration(
-                    border: UnderlineInputBorder(),
-                    labelText: 'Email:',
-                  ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Flutter Iterable Example App'),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 48, right: 96),
+              child: TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (value) {
+                  setEmail(value);
+                  track('event_tracking_ios');
+                },
+                decoration: InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Email:',
                 ),
               ),
-              Text("Push: $pushData"),
-              Text("Body: ${pushData['body']}"),
-              Text("Title: ${pushData['title']}"),
-              Text("Type: ${pushData['additionalData']?['type']}"),
-              Text("name: ${pushData['additionalData']?['name']}"),
-            ],
-          ),
+            ),
+            Text("Push: $pushData"),
+            Text("Body: ${pushData['body']}"),
+            Text("Title: ${pushData['title']}"),
+            Text("Type: ${pushData['additionalData']?['type']}"),
+            Text("name: ${pushData['additionalData']?['name']}"),
+            SizedBox(
+              height: 20,
+            ),
+            RaisedButton(
+                onPressed: () {
+                  navigationToSecondPage(pushData['additionalData']?['name']);
+                },
+                child: Text('Button'))
+          ],
         ),
       ),
     );
