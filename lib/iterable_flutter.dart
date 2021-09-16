@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 
-typedef void OpenedNotificationHandler(Map openedResult);
+typedef OpenedNotificationHandler = void Function(Map openedResult);
 
+// ignore: avoid_classes_with_only_static_members
 class IterableFlutter {
-  static const MethodChannel _channel = const MethodChannel('iterable_flutter');
+  static const MethodChannel _channel = MethodChannel('iterable_flutter');
 
-  // event handlers
   static OpenedNotificationHandler? _onOpenedNotification;
 
   static Future<void> initialize({
@@ -44,15 +44,17 @@ class IterableFlutter {
     await _channel.invokeMethod('signOut');
   }
 
+  // ignore: use_setters_to_change_properties
   static void setNotificationOpenedHandler(OpenedNotificationHandler handler) {
     _onOpenedNotification = handler;
   }
 
   static Future<dynamic> nativeMethodCallHandler(MethodCall methodCall) async {
+    final arguments = methodCall.arguments as Map<dynamic, dynamic>;
 
     switch (methodCall.method) {
       case "openedNotificationHandler":
-        _onOpenedNotification?.call(methodCall.arguments);
+        _onOpenedNotification?.call(arguments);
         return "This data from flutter.....";
       default:
         return "Nothing";
