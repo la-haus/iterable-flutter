@@ -79,7 +79,6 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
   private fun initialize(apiKey: String, pushIntegrationName: String) {
     val config = IterableConfig.Builder()
-      .setLogLevel(Log.DEBUG)
       .setPushIntegrationName(pushIntegrationName)
       .setAutoPushRegistration(false)
       .setCustomActionHandler { _, _ ->
@@ -88,23 +87,6 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
       }
       .build()
     IterableApi.initialize(context, apiKey, config)
-
-    FirebaseMessaging.getInstance().token
-      .addOnCompleteListener(OnCompleteListener { task ->
-        if (!task.isSuccessful) {
-          Log.e(
-            "initialize error >>>",
-            "Fetching FCM registration token failed",
-            task.exception
-          )
-          return@OnCompleteListener
-        }
-
-        // Get new FCM registration token
-        val token = task.result
-
-        Log.e("initialize token >>>", "Fetching FCM registration token $token")
-      })
   }
 
 
