@@ -73,6 +73,10 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         IterableApi.getInstance().disablePush()
         result.success(null)
       }
+      "checkRecentNotification" -> {
+        notifyPushNotificationOpened()
+        result.success(null)
+      }
       else -> {
         result.notImplemented()
       }
@@ -88,7 +92,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         false
       }
 
-    if (activeLogDebug){
+    if (activeLogDebug) {
       configBuilder.setLogLevel(Log.DEBUG)
     }
 
@@ -101,18 +105,17 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
   private fun notifyPushNotificationOpened() {
     val bundleData = IterableApi.getInstance().payloadData
-    val pushData = clearPushData(bundleData)
-    channel.invokeMethod("openedNotificationHandler", pushData)
+
+    bundleData?.let {
+      val pushData = clearPushData(it)
+      channel.invokeMethod("openedNotificationHandler", pushData)
+    }
   }
 
-  private fun clearPushData(bundleData: Bundle?): Map<String, Any?> {
+  private fun clearPushData(bundleData: Bundle): Map<String, Any?> {
 
-    return bundleData?.let { bundle ->
-      val mapPushData = bundleToMap(bundle)
-      return buildPushDataMap(mapPushData)
-    } ?: run {
-      return mapOf()
-    }
+    val mapPushData = bundleToMap(bundleData)
+    return buildPushDataMap(mapPushData)
   }
 
   private fun buildPushDataMap(mapPushData: Map<String, Any?>): Map<String, Any?> {
@@ -123,19 +126,15 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
     )
   }
 
-  private fun bundleToMap(extras: Bundle?): Map<String, String?> {
-    return extras?.let { bundle ->
-      val map: MutableMap<String, String?> = HashMap()
-      val keySetValue = bundle.keySet()
-      val iterator: Iterator<String> = keySetValue.iterator()
-      while (iterator.hasNext()) {
-        val key = iterator.next()
-        map[key] = bundle.getString(key)
-      }
-      return map
-    } ?: run {
-      return mapOf()
-    }
+  private fun bundleToMap(extras: Bundle): Map<String, String?> {
 
+    val map: MutableMap<String, String?> = HashMap()
+    val keySetValue = extras.keySet()
+    val iterator: Iterator<String> = keySetValue.iterator()
+    while (iterator.hasNext()) {
+      val key = iterator.next()
+      map[key] = extras.getString(key)
+    }
+    return map
   }
 }
