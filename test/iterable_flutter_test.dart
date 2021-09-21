@@ -35,6 +35,8 @@ void main() {
           return null;
         case 'signOut':
           return null;
+        case 'checkRecentNotification':
+          return null;
         default:
           return null;
       }
@@ -95,6 +97,13 @@ void main() {
     await IterableFlutter.signOut();
     expect(calledMethod, <Matcher>[
       isMethodCall('signOut', arguments: null),
+    ]);
+  });
+
+  test('checkRecentNotification', () async {
+    IterableFlutter.setNotificationOpenedHandler((openedResultMap) {});
+    expect(calledMethod, <Matcher>[
+      isMethodCall('checkRecentNotification', arguments: null),
     ]);
   });
 
