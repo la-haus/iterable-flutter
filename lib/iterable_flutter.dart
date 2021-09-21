@@ -46,9 +46,14 @@ class IterableFlutter {
     await _channel.invokeMethod('signOut');
   }
 
+  static Future<void> checkRecentNotification() async {
+    await _channel.invokeMethod('checkRecentNotification');
+  }
+
   // ignore: use_setters_to_change_properties
   static void setNotificationOpenedHandler(OpenedNotificationHandler handler) {
     _onOpenedNotification = handler;
+    checkRecentNotification();
   }
 
   static Future<dynamic> nativeMethodCallHandler(MethodCall methodCall) async {
@@ -57,7 +62,7 @@ class IterableFlutter {
     switch (methodCall.method) {
       case "openedNotificationHandler":
         _onOpenedNotification?.call(arguments);
-        return "This data from flutter.....";
+        return "This data from native.....";
       default:
         return "Nothing";
     }
