@@ -13,12 +13,14 @@ class IterableFlutter {
   static Future<void> initialize({
     required String apiKey,
     required String pushIntegrationName,
+    bool activeLogDebug = false,
   }) async {
     await _channel.invokeMethod(
       'initialize',
       {
         'apiKey': apiKey,
         'pushIntegrationName': pushIntegrationName,
+        'activeLogDebug': activeLogDebug
       },
     );
     _channel.setMethodCallHandler(nativeMethodCallHandler);
