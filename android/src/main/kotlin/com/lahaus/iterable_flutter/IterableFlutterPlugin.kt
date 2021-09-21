@@ -2,6 +2,7 @@ package com.lahaus.iterable_flutter
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Debug
 import android.util.Log
 import androidx.annotation.NonNull
 import com.google.android.gms.tasks.OnCompleteListener
@@ -42,9 +43,10 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
       "initialize" -> {
         val apiKey = call.argument<String>("apiKey") ?: ""
         val pushIntegrationName = call.argument<String>("pushIntegrationName") ?: ""
+        val activeLogDebug = call.argument<Boolean>("activeLogDebug") ?: false
 
         if (apiKey.isNotEmpty() && pushIntegrationName.isNotEmpty()) {
-          initialize(apiKey, pushIntegrationName)
+          initialize(apiKey, pushIntegrationName, activeLogDebug)
         }
         result.success(null)
       }
@@ -77,18 +79,21 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
     }
   }
 
-  private fun initialize(apiKey: String, pushIntegrationName: String) {
-    val config = IterableConfig.Builder()
+  private fun initialize(apiKey: String, pushIntegrationName: String, activeLogDebug: Boolean) {
+    val configBuilder = IterableConfig.Builder()
       .setPushIntegrationName(pushIntegrationName)
       .setAutoPushRegistration(false)
       .setCustomActionHandler { _, _ ->
         notifyPushNotificationOpened()
-       false
+        false
       }
-      .build()
-    IterableApi.initialize(context, apiKey, config)
-  }
 
+    if (activeLogDebug){
+      configBuilder.setLogLevel(Log.DEBUG)
+    }
+
+    IterableApi.initialize(context, apiKey, configBuilder.build())
+  }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
     channel.setMethodCallHandler(null)

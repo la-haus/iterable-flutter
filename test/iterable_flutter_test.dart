@@ -8,6 +8,7 @@ void main() {
   const MethodChannel channel = MethodChannel('iterable_flutter');
   const String apiKey = 'apiKey';
   const String pushIntegrationName = 'pushIntegrationName';
+  const String activeLogDebug = 'activeLogDebug';
   const String email = 'my@email.com';
   const String userId = '11111';
   const String event = 'my_event';
@@ -53,7 +54,11 @@ void main() {
     expect(calledMethod, <Matcher>[
       isMethodCall(
         'initialize',
-        arguments: {apiKey: apiKey, pushIntegrationName: pushIntegrationName},
+        arguments: {
+          apiKey: apiKey,
+          pushIntegrationName: pushIntegrationName,
+          activeLogDebug: false
+        },
       ),
     ]);
   });
