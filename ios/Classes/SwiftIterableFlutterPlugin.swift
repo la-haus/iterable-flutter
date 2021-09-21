@@ -40,6 +40,10 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             IterableAPI.track(event: eventName)
             
             result(nil)
+         case "checkRecentNotification":
+            notifyPushNotificationOpened()
+
+            result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -90,17 +94,28 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
                                        didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
         IterableAppIntegration.userNotificationCenter(center, didReceive: response, withCompletionHandler: completionHandler)
-        
-        let userInfo = response.notification.request.content.userInfo
-        let apsInfo = userInfo["aps"] as? [String: AnyObject]
-        let alertInfo = apsInfo!["alert"] as? [String: AnyObject]
-        
-        let payload = [
-            "title": alertInfo!["title"],
-            "body": alertInfo!["body"],
-            "additionalData": IterableAPI.lastPushPayload
-        ] as [String : Any]
-        
-        SwiftIterableFlutterPlugin.channel?.invokeMethod("openedNotificationHandler", arguments: payload)
+        notifyPushNotificationOpened()
     }
+
+    public func notifyPushNotificationOpened(){
+        let userInfo = IterableAPI.lastPushPayload
+        
+        if(userInfo != nil){
+            let apsInfo = userInfo!["aps"] as? [String: AnyObject]
+            let alertInfo = apsInfo?["alert"] as? [String: AnyObject]
+            
+            if(alertInfo != nil){
+                
+                let payload = [
+                    "title": alertInfo?["title"] ?? "",
+                    "body": alertInfo?["body"] ?? "",
+                    "additionalData": IterableAPI.lastPushPayload!
+                ] as [String : Any]
+                
+                SwiftIterableFlutterPlugin.channel?.invokeMethod("openedNotificationHandler", arguments: payload)
+            }
+            
+        }
+        
+   }
 }
