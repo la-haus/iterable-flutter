@@ -83,23 +83,17 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
     val configBuilder = IterableConfig.Builder()
       .setPushIntegrationName(pushIntegrationName)
       .setAutoPushRegistration(false)
+      .setCustomActionHandler { _, _ ->
+        notifyPushNotificationOpened()
+        false
+      }
 
     if (activeLogDebug){
       configBuilder.setLogLevel(Log.DEBUG)
     }
 
-    setupHandlerPushNotification(configBuilder)
-
     IterableApi.initialize(context, apiKey, configBuilder.build())
   }
-
-  private fun setupHandlerPushNotification(configBuilder: IterableConfig.Builder){
-    configBuilder.setCustomActionHandler { _, _ ->
-      notifyPushNotificationOpened()
-      false
-    }
-  }
-
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
     channel.setMethodCallHandler(null)
