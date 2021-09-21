@@ -62,7 +62,7 @@ class IterableFlutter {
     switch (methodCall.method) {
       case "openedNotificationHandler":
         _onOpenedNotification?.call(arguments);
-        return "This data from navitve.....";
+        return "This data from native.....";
       default:
         return "Nothing";
     }
