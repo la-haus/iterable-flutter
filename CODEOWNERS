@@ -1,0 +1,4 @@
+# See https://help.github.com/articles/about-codeowners/ for valid syntax for entries.
+
+# Default owners for everything in the repo, unless a later match takes precedence
+* danielgomezrico@gmail.com @cdmunoz @Santi92 @juansoos
