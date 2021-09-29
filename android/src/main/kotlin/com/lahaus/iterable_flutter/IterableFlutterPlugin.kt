@@ -127,7 +127,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
       val key = iterator.next()
       map[key] = extras[key]
     }
-    
+
     return map
   }
 }

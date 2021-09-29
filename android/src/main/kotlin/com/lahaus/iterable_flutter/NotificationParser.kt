@@ -10,22 +10,22 @@ class NotificationParser {
     return buildSendPushMap(mapPushData)
   }
 
-  private fun getAllFormatInt(dataPush: Map<String, Any?>): Map<String, Any?>{
+  private fun getAllFormatInt(dataPush: Map<String, Any?>): Map<String, Any?> {
     val map: MutableMap<String, Any?> = HashMap()
     for ((key, value) in dataPush) {
 
-      if(value is String){
+      if (value is String) {
 
-        if(value.intOrString() is Int){
+        if (value.toIntOrNull() != null) {
           val newValueInt: Int = value.toInt();
           map[key] = newValueInt;
-        }else{
+        } else {
           map[key] = value;
         }
       }
 
     }
-    return  map;
+    return map;
   }
 
   private fun buildSendPushMap(mapPushData: Map<String, Any?>): Map<String, Any?> {
@@ -36,11 +36,4 @@ class NotificationParser {
     )
   }
 
-}
-
-
-fun String.intOrString() = try { // returns Any
-  toInt()
-} catch(e: NumberFormatException) {
-  this
 }
