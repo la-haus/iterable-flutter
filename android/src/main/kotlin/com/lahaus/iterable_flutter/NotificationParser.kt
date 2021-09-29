@@ -13,9 +13,7 @@ class NotificationParser {
   private fun getAllFormatInt(dataPush: Map<String, Any?>): Map<String, Any?> {
     val map: MutableMap<String, Any?> = HashMap()
     for ((key, value) in dataPush) {
-
       if (value is String) {
-
         if (value.toIntOrNull() != null) {
           val newValueInt: Int = value.toInt();
           map[key] = newValueInt;
