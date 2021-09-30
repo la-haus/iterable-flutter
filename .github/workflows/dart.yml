@@ -17,17 +17,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      # Get dart with specified version 
-      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
-        with:
-          sdk: 2.13.3
 
-      # Get flutter with specified version for test
-      - name: Setup Flutter 2.2.2
+      - name: Setup Flutter
         id: flutter
         uses: DanTup/gh-actions/setup-flutter@master
         with:
-          channel: 2.2.2    
+          channel: 2.2.2
 
       - name: Install dependencies
         run: flutter pub get
