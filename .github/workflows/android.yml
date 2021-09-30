@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Sail to the gradlew
-        run:  cd example/android/  
+        run:  cd example/android  
       - name: Checkout the code
         uses: actions/checkout@v2
       - name: Build the app
