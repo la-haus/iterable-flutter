@@ -49,7 +49,9 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initIterable();
+
+    IterableFlutter.initialize(...);
+
     //You remember before call IterableFlutter.initialize
     IterableFlutter.setNotificationOpenedHandler((pushData) {
       print("Push: $pushData");
