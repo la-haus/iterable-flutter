@@ -115,26 +115,19 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
   private fun clearPushData(bundleData: Bundle): Map<String, Any?> {
 
     val mapPushData = bundleToMap(bundleData)
-    return buildPushDataMap(mapPushData)
+    return NotificationParser().parse(mapPushData)
   }
 
-  private fun buildPushDataMap(mapPushData: Map<String, Any?>): Map<String, Any?> {
-    return mapOf(
-      "title" to mapPushData["title"],
-      "body" to mapPushData["body"],
-      "additionalData" to mapPushData
-    )
-  }
+  private fun bundleToMap(extras: Bundle): Map<String, Any?> {
 
-  private fun bundleToMap(extras: Bundle): Map<String, String?> {
-
-    val map: MutableMap<String, String?> = HashMap()
+    val map: MutableMap<String, Any?> = HashMap()
     val keySetValue = extras.keySet()
     val iterator: Iterator<String> = keySetValue.iterator()
     while (iterator.hasNext()) {
       val key = iterator.next()
-      map[key] = extras.getString(key)
+      map[key] = extras[key]
     }
+
     return map
   }
 }
