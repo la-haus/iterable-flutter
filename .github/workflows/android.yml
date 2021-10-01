@@ -24,6 +24,6 @@ jobs:
       with:
         gradle-version: 6.5
     - name: Build with Gradle
-      working-directory: ./example/android
+      working-directory: ./android
       run: gradle build
 
