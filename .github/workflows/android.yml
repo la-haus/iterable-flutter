@@ -8,13 +8,22 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
     steps:
-      - name: Sail to the gradlew
-        run:  cd example/android  
-      - name: Checkout the code
-        uses: actions/checkout@v2
-      - name: Build the app
-        run:  ./gradlew build 
-      - name: Test Android
-        run:  ./gradlew test 
+    - uses: actions/checkout@v2
+    - name: set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+        cache: gradle
+    - name: gradlew
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: 6.5
+    - name: Build with Gradle
+      working-directory: ./example/android
+      run: gradle build
+
