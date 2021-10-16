@@ -1,7 +1,6 @@
 # src: https://gist.github.com/rodydavis/bde9a9a8c2fcdcf3474c0f50248f2e3a
 
-name: Build
-
+name: Flutter Build
 on:
   push:
     branches:
@@ -21,7 +20,7 @@ defaults:
 
 jobs:
   build_web:
-    name: Build Flutter (Web)
+    name: Build Web
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -33,7 +32,7 @@ jobs:
       - run: flutter build web
 
   build_ios:
-    name: Build Flutter (iOS)
+    name: Build iOS
     runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v1
@@ -47,8 +46,8 @@ jobs:
       - run: flutter clean
       - run: flutter build ios --release --no-codesign
 
-  build_apk:
-    name: Build Flutter (Android)
+  build_android:
+    name: Build Android
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -60,4 +59,3 @@ jobs:
           channel: 'dev'
       - run: flutter pub get
       - run: flutter build appbundle
-
