@@ -1,6 +1,7 @@
 # src: https://gist.github.com/rodydavis/bde9a9a8c2fcdcf3474c0f50248f2e3a
 
 name: Build
+
 on:
   push:
     branches:
@@ -14,6 +15,10 @@ concurrency:
   group: ${{ github.head_ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    working-directory: example/
+
 jobs:
   build_web:
     name: Build Flutter (Web)
@@ -23,7 +28,6 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: 'dev'
-      - run: cd example
       - run: flutter pub get
       - run: flutter config --enable-web
       - run: flutter build web
@@ -39,7 +43,6 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: 'dev'
-      - run: cd example
       - run: flutter pub get
       - run: flutter clean
       - run: flutter build ios --release --no-codesign
@@ -55,7 +58,6 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: 'dev'
-      - run: cd example
       - run: flutter pub get
       - run: flutter build appbundle
 
