@@ -1,0 +1,55 @@
+# src: https://gist.github.com/rodydavis/bde9a9a8c2fcdcf3474c0f50248f2e3a
+
+name: Build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build_web:
+    name: Build Flutter (Web)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'dev'
+      - run: flutter pub get
+      - run: flutter config --enable-web
+      - run: flutter build web
+
+  build_ios:
+    name: Build Flutter (iOS)
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'dev'
+      - run: cd example
+      - run: flutter pub get
+      - run: flutter clean
+      - run: flutter build ios --release --no-codesign
+
+  build_apk:
+    name: Build Flutter (Android)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'dev'
+      - run: cd example
+      - run: flutter pub get
+      - run: flutter build appbundle
+
