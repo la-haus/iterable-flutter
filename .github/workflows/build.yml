@@ -9,6 +9,11 @@ on:
     branches:
       - master
 
+# Cancel jobs and just run the last one
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   build_web:
     name: Build Flutter (Web)
