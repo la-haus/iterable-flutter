@@ -19,18 +19,6 @@ defaults:
     working-directory: example/
 
 jobs:
-  build_web:
-    name: Build Web
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: subosito/flutter-action@v1
-        with:
-          channel: 'dev'
-      - run: flutter pub get
-      - run: flutter config --enable-web
-      - run: flutter build web
-
   build_ios:
     name: Build iOS
     runs-on: macOS-latest
