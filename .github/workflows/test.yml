@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Dart
+name: Test
 
 on:
   push:
@@ -11,8 +11,13 @@ on:
   pull_request:
     branches: [ master ]
 
+# Cancel jobs and just run the last one
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  unit_test:
     runs-on: ubuntu-latest
 
     steps:
