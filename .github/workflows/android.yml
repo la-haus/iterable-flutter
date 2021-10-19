@@ -29,16 +29,8 @@ jobs:
           channel: 'dev'
       - run: flutter pub get
       - run: flutter build appbundle
-
-  test_android:
-    name: Test Android
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '12.x'
       - uses: gradle/gradle-build-action@v2
-        with:
-          arguments: test
+          with:
+            arguments: test
+
 
