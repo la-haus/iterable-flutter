@@ -30,7 +30,7 @@ jobs:
       - run: flutter pub get
       - run: flutter build appbundle
       - uses: gradle/gradle-build-action@v2
-          with:
-            arguments: test
+        with:
+          arguments: test
 
 
