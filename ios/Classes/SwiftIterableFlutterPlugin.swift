@@ -44,6 +44,13 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             notifyPushNotificationOpened()
 
             result(nil)
+        case "updateUser":
+            let args = getPropertiesFromArguments(call.arguments)
+            if let userInfo = args["params"] as? [String : Any] {
+                IterableAPI.updateUser(userInfo, mergeNestedObjects: false)
+            }
+
+            result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }

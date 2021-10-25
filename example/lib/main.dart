@@ -64,6 +64,10 @@ class _MyAppState extends State<MyApp> {
     await IterableFlutter.registerForPush();
   }
 
+  Future<void> updateUser(Map<String, dynamic> userInfo) async {
+    await IterableFlutter.updateUser(params: userInfo);
+  }
+
   Map<dynamic, dynamic> pushData = {};
 
   void listener() {
@@ -110,6 +114,26 @@ class _MyAppState extends State<MyApp> {
                   labelText: 'Email:',
                 ),
               ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 48, right: 96),
+              child: TextFormField(
+                keyboardType: TextInputType.name,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (value) {
+                  updateUser({'firstName': value});
+                },
+                decoration: InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'First Name:',
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
             ),
             Text("Push: $pushData"),
             Text("Body: ${pushData['body']}"),

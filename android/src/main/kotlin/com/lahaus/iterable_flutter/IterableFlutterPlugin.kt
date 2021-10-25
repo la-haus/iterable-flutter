@@ -13,6 +13,8 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import org.json.JSONObject
+import org.json.JSONException
 import java.util.*
 
 
@@ -76,6 +78,10 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
       "checkRecentNotification" -> {
         notifyPushNotificationOpened()
         result.success(null)
+      }
+      "updateUser" -> {
+        var userInfo = call.argument<Map<String, Any>?>("params")
+        IterableApi.getInstance().updateUser(JSONObject(userInfo))
       }
       else -> {
         result.notImplemented()
