@@ -115,9 +115,7 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height: 20),
             Padding(
               padding: EdgeInsets.only(left: 48, right: 96),
               child: TextFormField(
@@ -132,9 +130,7 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height: 20),
             Text("Push: $pushData"),
             Text("Body: ${pushData['body']}"),
             Text("Title: ${pushData['title']}"),
