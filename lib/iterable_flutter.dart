@@ -50,6 +50,15 @@ class IterableFlutter {
     await _channel.invokeMethod('checkRecentNotification');
   }
 
+  static Future<void> updateUser({required Map<String, dynamic> params}) async {
+    await _channel.invokeMethod(
+      'updateUser',
+      {
+        'params': params,
+      },
+    );
+  }
+
   // ignore: use_setters_to_change_properties
   static void setNotificationOpenedHandler(OpenedNotificationHandler handler) {
     _onOpenedNotification = handler;

@@ -37,6 +37,8 @@ void main() {
           return null;
         case 'checkRecentNotification':
           return null;
+        case 'updateUser':
+          return null;
         default:
           return null;
       }
@@ -131,5 +133,12 @@ void main() {
             (ByteData? data) {});
 
     expect(contentBody, pushData[keyBody]);
+  });
+
+  test('updateUser', () async {
+    await IterableFlutter.updateUser(params);
+    expect(calledMethod, <Matcher>[
+      isMethodCall('updateUser', arguments: params),
+    ]);
   });
 }
