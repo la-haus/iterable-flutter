@@ -51,6 +51,10 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             }
 
             result(nil)
+        case "registerForPush":
+            registerForPushNotifications()
+
+            result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -73,7 +77,6 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
         UNUserNotificationCenter.current().delegate = self
-        registerForPushNotifications()
         
         return true
     }
