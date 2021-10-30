@@ -136,9 +136,9 @@ void main() {
   });
 
   test('updateUser', () async {
-    await IterableFlutter.updateUser(params);
+    await IterableFlutter.updateUser(params: {});
     expect(calledMethod, <Matcher>[
-      isMethodCall('updateUser', arguments: params),
+      isMethodCall('updateUser', arguments: {"params": {}}),
     ]);
   });
 }
