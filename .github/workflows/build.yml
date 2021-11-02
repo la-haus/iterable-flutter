@@ -1,6 +1,7 @@
 # src: https://gist.github.com/rodydavis/bde9a9a8c2fcdcf3474c0f50248f2e3a
 
 name: Flutter Build
+
 on:
   push:
     branches:
@@ -31,7 +32,6 @@ jobs:
         with:
           channel: 'dev'
       - run: flutter pub get
-      - run: flutter clean
       - run: flutter build ios --release --no-codesign
 
   build_android:
