@@ -57,7 +57,7 @@ void main() {
     );
     expect(calledMethod, <Matcher>[
       isMethodCall(
-        'initialize',
+        'initialise',
         arguments: {
           apiKey: apiKey,
           pushIntegrationName: pushIntegrationName,
