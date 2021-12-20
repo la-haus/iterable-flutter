@@ -42,8 +42,9 @@ android {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation 'com.iterable:iterableapi:3.3.1'
+    implementation 'com.iterable:iterableapi:3.3.9'
     implementation 'com.google.firebase:firebase-messaging:22.0.0'
+    implementation  'com.google.android.gms:play-services-measurement:17.0.0'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.json:json:20210307'
 
