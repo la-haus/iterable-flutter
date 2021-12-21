@@ -21,7 +21,7 @@ import java.util.*
 class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
   private val methodChannelName = "iterable_flutter"
-
+  private  val TAG = "MyActivity"
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -45,6 +45,8 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         val apiKey = call.argument<String>("apiKey") ?: ""
         val pushIntegrationName = call.argument<String>("pushIntegrationName") ?: ""
         val activeLogDebug = call.argument<Boolean>("activeLogDebug") ?: false
+        Log.d(TAG, apiKey)
+        Log.d(TAG, pushIntegrationName)
 
         if (apiKey.isNotEmpty() && pushIntegrationName.isNotEmpty()) {
           initialize(apiKey, pushIntegrationName, activeLogDebug)
@@ -56,6 +58,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         IterableApi.getInstance().setEmail(userEmail)
         IterableApi.getInstance().registerForPush()
         result.success(null)
+        Log.d(TAG, userEmail)
       }
       "setUserId" -> {
         IterableApi.getInstance().setUserId(call.arguments as String)
@@ -91,7 +94,6 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
   private fun initialize(apiKey: String, pushIntegrationName: String, activeLogDebug: Boolean) {
     val configBuilder = IterableConfig.Builder()
       .setPushIntegrationName(pushIntegrationName)
-      .setAutoPushRegistration(false)
       .setCustomActionHandler { _, _ ->
         notifyPushNotificationOpened()
         false
@@ -102,6 +104,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     IterableApi.initialize(context, apiKey, configBuilder.build())
+    Log.d(TAG, apiKey);
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {

@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lahaus.iterable_flutter_example">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="iterable_flutter_example"
+
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

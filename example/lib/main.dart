@@ -38,6 +38,7 @@ class _MyAppState extends State<MyApp> {
     return await IterableFlutter.initialize(
       apiKey: apiKey,
       pushIntegrationName: pushIntegrationName,
+      activeLogDebug: true
     );
   }
 
