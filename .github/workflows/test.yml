@@ -15,7 +15,7 @@ on:
 
 # Cancel jobs and just run the last one
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.head_ref }}-unit-test
   cancel-in-progress: true
 
 jobs:
