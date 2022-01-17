@@ -12,7 +12,6 @@ on:
 
 # Cancel jobs and just run the last one
 concurrency:
-<<<<<<< HEAD
   group: ${{ github.head_ref }}-build
   cancel-in-progress: true
 
