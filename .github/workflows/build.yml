@@ -12,7 +12,7 @@ on:
 
 # Cancel jobs and just run the last one
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.head_ref }}-build
   cancel-in-progress: true
 
 defaults:
@@ -28,9 +28,14 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '12.x'
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
-          channel: 'dev'
+          flutter-version: '2.8.1'
+          channel: 'stable'
+          cache: true
+          cache-key: flutter # optional, change this to force refresh cache
+          cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
+
       - run: flutter pub get
       - run: flutter build ios --release --no-codesign
 
@@ -42,8 +47,13 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '12.x'
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
-          channel: 'dev'
+          flutter-version: '2.8.1'
+          channel: 'stable'
+          cache: true
+          cache-key: flutter # optional, change this to force refresh cache
+          cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
+
       - run: flutter pub get
       - run: flutter build appbundle
