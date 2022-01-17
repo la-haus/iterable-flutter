@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  unit_test:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
