@@ -29,9 +29,10 @@ jobs:
           channel: 'dev'
       - run: flutter pub get
       - run: flutter build appbundle
-      - run: cd android
       - uses: gradle/gradle-build-action@v2
         with:
           arguments: test
+          build-root-directory: android/
+
 
 
