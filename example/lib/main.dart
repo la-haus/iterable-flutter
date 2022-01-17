@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
     await IterableFlutter.track(event);
   }
 
-    Future<void> signOut() async {
+  Future<void> signOut() async {
     await IterableFlutter.signOut();
   }
 
