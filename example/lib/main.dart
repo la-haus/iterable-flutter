@@ -57,6 +57,10 @@ class _MyAppState extends State<MyApp> {
     await IterableFlutter.track(event);
   }
 
+  Future<void> signOut() async {
+    await IterableFlutter.signOut();
+  }
+
   /// Call it to register device for current user if calling setEmail or
   /// setUserId after the app has already launched
   /// (for example, when a new user logs in)
@@ -129,6 +133,13 @@ class _MyAppState extends State<MyApp> {
                   labelText: 'First Name:',
                 ),
               ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                  signOut();
+              },
+              child: Text('Sign Out'),
             ),
             SizedBox(height: 20),
             Text("Push: $pushData"),

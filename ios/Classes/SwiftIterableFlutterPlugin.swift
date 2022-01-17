@@ -55,6 +55,10 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             registerForPushNotifications()
 
             result(nil)
+        case "signOut":
+            signOut()
+
+            result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -73,6 +77,10 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             return arguments;
         }
         return [:];
+    }
+
+    func signOut() {
+        IterableAPI.disableDeviceForCurrentUser()
     }
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
