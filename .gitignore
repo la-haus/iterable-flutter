@@ -1,4 +1,6 @@
-# La Haus Things
+# Do not include google services jsons
+**/google-services.json
+**/GoogleService-Info.plist
 
 ## Fastlane
 ios/fastlane/report.xml
@@ -10,6 +12,8 @@ coverage/
 ## iOS build artifacts
 *.dSYM.zip
 *.ipa
+
+git filter-branch --tree-filter 'rm -f example/android/app/google-services.json' HEAD
 
 ## Dont keep podfile lock since we have fixed versions on pubspec.yaml
 ## https://stackoverflow.com/a/58400616/273119
