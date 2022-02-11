@@ -8,7 +8,7 @@ documentation: https://github.com/la-haus/flutter-library-segment#readme
 
 environment:
   sdk: '>=2.13.3 <3.0.0'
-  flutter: 2.2.2
+  flutter: '>= 2.2.2'
 
 dependencies:
   flutter:
