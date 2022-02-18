@@ -1,3 +1,6 @@
+## 0.3.0+1
+Added to update pubspec info.
+
 ## 0.3.0
 - Implement signOut on iOS (thanks to @Gabriel-Azevedo: https://github.com/la-haus/iterable-flutter/pull/37
 
