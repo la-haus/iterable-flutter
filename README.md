@@ -1,4 +1,6 @@
 # Iterable Plugin
+[![Pub Version](https://img.shields.io/pub/v/iterable_flutter)](https://pub.dev/packages/iterable_flutter)
+
 > **This library is in alpha** so the implementation details could change a lot from version to version, 
 > check releases and [CHANGELOG.md](CHANGELOG.md) to know how it changes over time.
 
