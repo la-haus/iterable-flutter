@@ -21,8 +21,9 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             
             let apiKey = args["apiKey"] as! String
             let pushIntegrationName = args["pushIntegrationName"] as! String
+            let activeLogDebug = args["activeLogDebug"] as! Bool
             
-            initialize(apiKey, pushIntegrationName)
+            initialize(apiKey, pushIntegrationName, activeLogDebug)
             
             result(nil)
         case "setEmail":
@@ -64,12 +65,17 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
         }
     }
     
-    private func initialize(_ apiKey: String, _ pushIntegrationName: String){
+    private func initialize(_ apiKey: String, _ pushIntegrationName: String, _ activeLogDebug: Bool){
+        
         let config = IterableConfig()
         config.pushIntegrationName = pushIntegrationName
         config.autoPushRegistration = true
+        config.logDelegate = AllLogDelegate()
         
-        IterableAPI.initialize(apiKey: apiKey, config: config)
+        if(activeLogDebug){
+            IterableAPI.initialize(apiKey: apiKey, config: config)
+        }
+        
     }
     
     private func getPropertiesFromArguments(_ callArguments: Any?) -> [String: Any] {
