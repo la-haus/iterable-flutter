@@ -35,8 +35,14 @@ class IterableFlutter {
     await _channel.invokeMethod('setUserId', userId);
   }
 
-  static Future<void> track(String event) async {
-    await _channel.invokeMethod('track', event);
+  static Future<void> track({
+    required String event,
+    Map<String, dynamic>? dataFields = null,
+  }) async {
+    await _channel.invokeMethod('track', {
+      "event": event,
+      "data_fields": dataFields,
+    });
   }
 
   static Future<void> registerForPush() async {
