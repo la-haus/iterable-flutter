@@ -1,1 +1,68 @@
-{ "fill me": "with real data" }
+{
+  "project_info": {
+    "project_number": "123",
+    "project_id": "spike-iterable",
+    "storage_bucket": "spike.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123:android:123",
+        "android_client_info": {
+          "package_name": "com.lahaus.iterable_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123-123.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "123-123-123"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "123-123.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123:android:123",
+        "android_client_info": {
+          "package_name": "com.lahaus.iterable_flutter_example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123-123.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "123-123-123"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "123-123.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
