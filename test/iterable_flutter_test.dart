@@ -103,7 +103,7 @@ void main() {
   });
 
   test('checkRecentNotification', () async {
-    IterableFlutter.setNotificationOpenedHandler((openedResultMap) {});
+    await IterableFlutter.checkRecentNotification();
     expect(calledMethod, <Matcher>[
       isMethodCall('checkRecentNotification', arguments: null),
     ]);

@@ -62,7 +62,6 @@ class IterableFlutter {
   // ignore: use_setters_to_change_properties
   static void setNotificationOpenedHandler(OpenedNotificationHandler handler) {
     _onOpenedNotification = handler;
-    checkRecentNotification();
   }
 
   static Future<dynamic> nativeMethodCallHandler(MethodCall methodCall) async {
