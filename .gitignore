@@ -1,5 +1,5 @@
 # Do not include google services jsons
-**/google-services.json
+
 **/GoogleService-Info.plist
 
 ## Fastlane
