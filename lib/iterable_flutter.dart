@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 
@@ -66,13 +68,31 @@ class IterableFlutter {
 
   static Future<dynamic> nativeMethodCallHandler(MethodCall methodCall) async {
     final arguments = methodCall.arguments as Map<dynamic, dynamic>;
+    final argumentsCleaned = sanitizeMap(arguments,Platform.isAndroid);
 
     switch (methodCall.method) {
       case "openedNotificationHandler":
-        _onOpenedNotification?.call(arguments);
+        _onOpenedNotification?.call(argumentsCleaned);
         return "This data from native.....";
       default:
         return "Nothing";
     }
+  }
+
+
+  static Map<String, dynamic> sanitizeMap(Map<dynamic, dynamic> mapDynamic, bool isAndroidPlatform) {
+    var mapHandleDynamic = mapDynamic;
+
+    if (isAndroidPlatform) {
+      mapHandleDynamic = _stringJsonToMap(mapDynamic as String);
+    }
+    return Map<String, dynamic>.from(mapHandleDynamic);
+  }
+
+
+  static Map<dynamic, dynamic> _stringJsonToMap(String stringJson) {
+    final stringClean = stringJson.replaceAll('&quot;', '"');
+
+    return jsonDecode(stringClean) as Map<dynamic, dynamic>;
   }
 }
