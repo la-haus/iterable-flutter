@@ -2,6 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:iterable_flutter/iterable_flutter.dart';
 
+import 'factories/push_notification_metadata_factories.dart';
+
 void main() {
   final calledMethod = <MethodCall>[];
 
@@ -140,5 +142,40 @@ void main() {
     expect(calledMethod, <Matcher>[
       isMethodCall('updateUser', arguments: {"params": {}}),
     ]);
+  });
+
+  group('.sanitizeMap', () {
+    group('when metadata comes from Android', () {
+      test('should return a clear map', () {
+
+        final additionalData = buildPushNotificationMetadataAndroid();
+
+        final result = IterableFlutter.sanitizeMap(additionalData, true);
+
+        expect(result['body'], 'test');
+        expect(result['additionalData']['keyNumber'] as int, 1);
+        expect(result['additionalData']['keyMap']['keyMap2'], 'value2');
+        expect(result['additionalData']['keyMapChild']['keyMapChild3']['keyMapChild32'], 'value3');
+        expect(result['additionalData']['itbl']['isGhostPush'] as bool, isFalse);
+        expect(result['additionalData']['itbl']['defaultAction']['type'], 'openApp');
+      });
+    });
+
+
+    group('when metadata comes from iOS', () {
+      test('should return a clear map', () {
+
+        final additionalData = buildPushNotificationMetadataIOS();
+
+        final result = IterableFlutter.sanitizeMap(additionalData, false);
+
+        expect(result['body'], 'test');
+        expect(result['additionalData']['keyNumber'] as int, 1);
+        expect(result['additionalData']['keyMap']['keyMap2'], 'value2');
+        expect(result['additionalData']['keyMapChild']['keyMapChild3']['keyMapChild32'], 'value3');
+        expect(result['additionalData']['itbl']['isGhostPush'] as bool, isFalse);
+        expect(result['additionalData']['itbl']['defaultAction']['type'], 'openApp');
+      });
+    });
   });
 }
