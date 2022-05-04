@@ -80,13 +80,13 @@ class IterableFlutter {
   }
 
   static Map<String, dynamic> sanitizeMap(
-    Map<dynamic, dynamic> mapDynamic,
+    Map<dynamic, dynamic> dynamicMap,
     bool isAndroidPlatform,
   ) {
-    final mapHandleDynamic = mapDynamic;
+    final dynamicMapHandler = dynamicMap;
 
     if (isAndroidPlatform) {
-      final dataMap = mapHandleDynamic['additionalData'];
+      final dataMap = dynamicMapHandler['additionalData'];
       dataMap.forEach((key, value) {
         if (value is String) {
           if (value[0] == '{' && value[value.length - 1] == '}') {
@@ -94,9 +94,9 @@ class IterableFlutter {
           }
         }
       });
-      mapHandleDynamic['additionalData'] = dataMap;
+      dynamicMapHandler['additionalData'] = dataMap;
     }
-    return Map<String, dynamic>.from(mapHandleDynamic);
+    return Map<String, dynamic>.from(dynamicMapHandler);
   }
 
   static Map<dynamic, dynamic> _stringJsonToMap(String stringJson) {
