@@ -1,3 +1,14 @@
+## 0.5.4
+### Features
+- feat(Data Push): have a single delivery format of the push notification metadata. 🧾 #47.
+- feat(Library Pubspec): add pubspec to the ignore file by recommendation #43
+### Fix
+- Fix Crash on API 31+ #46.
+- fix(Open Push IOS): could not read push data when app was closed. #45
+- fix(Last Push Payload): when you open the app, reload the latest data from the push notification #42
+### Other work
+- ci(Android): fix ci builds for android #44
+
 ## 0.3.0+1
 Added to update pubspec info.
 
