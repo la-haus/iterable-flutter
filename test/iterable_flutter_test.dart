@@ -150,7 +150,7 @@ void main() {
 
         final additionalData = buildPushNotificationMetadataAndroid();
 
-        final result = IterableFlutter.sanitizeMap(additionalData, true);
+        final result = IterableFlutter.sanitizeArguments(additionalData, true);
 
         expect(result['body'], 'test');
         expect(result['additionalData']['keyNumber'] as int, 1);
@@ -167,7 +167,7 @@ void main() {
 
         final additionalData = buildPushNotificationMetadataIOS();
 
-        final result = IterableFlutter.sanitizeMap(additionalData, false);
+        final result = IterableFlutter.sanitizeArguments(additionalData, false);
 
         expect(result['body'], 'test');
         expect(result['additionalData']['keyNumber'] as int, 1);

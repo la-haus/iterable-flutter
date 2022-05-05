@@ -68,7 +68,7 @@ class IterableFlutter {
 
   static Future<dynamic> nativeMethodCallHandler(MethodCall methodCall) async {
     final arguments = methodCall.arguments as Map<dynamic, dynamic>;
-    final argumentsCleaned = sanitizeMap(arguments, Platform.isAndroid);
+    final argumentsCleaned = sanitizeArguments(arguments, Platform.isAndroid);
 
     switch (methodCall.method) {
       case "openedNotificationHandler":
@@ -79,24 +79,24 @@ class IterableFlutter {
     }
   }
 
-  static Map<String, dynamic> sanitizeMap(
-    Map<dynamic, dynamic> dynamicMap,
+  static Map<String, dynamic> sanitizeArguments(
+    Map<dynamic, dynamic> arguments,
     bool isAndroidPlatform,
   ) {
-    final dynamicMapHandler = dynamicMap;
+    final result = arguments;
 
     if (isAndroidPlatform) {
-      final dataMap = dynamicMapHandler['additionalData'];
-      dataMap.forEach((key, value) {
+      final data = result['additionalData'];
+      data.forEach((key, value) {
         if (value is String) {
           if (value[0] == '{' && value[value.length - 1] == '}') {
-            dataMap[key] = _stringJsonToMap(value);
+            data[key] = _stringJsonToMap(value);
           }
         }
       });
-      dynamicMapHandler['additionalData'] = dataMap;
+      result['additionalData'] = data;
     }
-    return Map<String, dynamic>.from(dynamicMapHandler);
+    return Map<String, dynamic>.from(result);
   }
 
   static Map<dynamic, dynamic> _stringJsonToMap(String stringJson) {
