@@ -1,5 +1,9 @@
 # Iterable Plugin
 [![Pub Version](https://img.shields.io/pub/v/iterable_flutter)](https://pub.dev/packages/iterable_flutter)
+[![Build](https://github.com/la-haus/iterable-flutter/actions/workflows/build.yml/badge.svg)](https://github.com/la-haus/iterable-flutter/actions/workflows/build.yml)
+[![Lint](https://github.com/la-haus/iterable-flutter/actions/workflows/lint.yml/badge.svg)](https://github.com/la-haus/iterable-flutter/actions/workflows/lint.yml)
+[![Tests](https://github.com/la-haus/iterable-flutter/actions/workflows/test.yml/badge.svg)](https://github.com/la-haus/iterable-flutter/actions/workflows/test.yml)
+[![Deployed to PubSpec](https://github.com/la-haus/iterable-flutter/actions/workflows/deploy_pubspec.yml/badge.svg)](https://github.com/la-haus/iterable-flutter/actions/workflows/deploy_pubspec.yml)
 
 > **This library is in alpha** so the implementation details could change a lot from version to version, 
 > check releases and [CHANGELOG.md](CHANGELOG.md) to know how it changes over time.
