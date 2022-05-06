@@ -1,3 +1,6 @@
+# File downloaded by CI
+credentials.json
+
 # Do not include pubspec.lock https://dart.dev/guides/libraries/private-files#pubspeclock
 pubspec.lock
 
