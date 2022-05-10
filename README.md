@@ -26,12 +26,9 @@ To use this plugin, add `iterable_flutter` as a [dependency in your pubspec.yaml
 | `setNotificationOpenedHandler` | X | X | |
 
 ## Installation
-1. Add `iterable_flutter` as a plugin in `pubspec.yaml` file like this:
+1. Add `iterable_flutter` as a plugin in `pubspec.yaml` with the version you need like this:
 ```yaml
-iterable_flutter:
-  git:
-    url: https://github.com/la-haus/iterable-flutter.git
-    ref: 0.1.0 # Version that you want
+iterable_flutter: 0.5.4
 ```
 
 2. Use `IterableFlutter.initialize` to set your iterable keys.
