@@ -15,8 +15,8 @@ void main() {
   const String userId = '11111';
   const String event = 'my_event';
 
-  const contentBody = "Test body push";
-  const keyBody = "body";
+  const contentBody = {'testKey': "Test body push"};
+  const keyBody = "additionalData";
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -147,34 +147,63 @@ void main() {
   group('.sanitizeMap', () {
     group('when metadata comes from Android', () {
       test('should return a clear map', () {
-
         final additionalData = buildPushNotificationMetadataAndroid();
 
-        final result = IterableFlutter.sanitizeArguments(additionalData, true);
+        final result = IterableFlutter.sanitizeArguments(additionalData);
 
         expect(result['body'], 'test');
         expect(result['additionalData']['keyNumber'] as int, 1);
         expect(result['additionalData']['keyMap']['keyMap2'], 'value2');
-        expect(result['additionalData']['keyMapChild']['keyMapChild3']['keyMapChild32'], 'value3');
-        expect(result['additionalData']['itbl']['isGhostPush'] as bool, isFalse);
-        expect(result['additionalData']['itbl']['defaultAction']['type'], 'openApp');
+        expect(
+            result['additionalData']['keyMapChild']['keyMapChild3']
+                ['keyMapChild32'],
+            'value3');
+        expect(
+            result['additionalData']['itbl']['isGhostPush'] as bool, isFalse);
+        expect(result['additionalData']['itbl']['defaultAction']['type'],
+            'openApp');
       });
     });
 
-
     group('when metadata comes from iOS', () {
-      test('should return a clear map', () {
+      group('when payload arrives clean', () {
+        test('should return a clear map', () {
+          final additionalData = buildPushNotificationMetadataIOS();
 
-        final additionalData = buildPushNotificationMetadataIOS();
+          final result = IterableFlutter.sanitizeArguments(additionalData);
 
-        final result = IterableFlutter.sanitizeArguments(additionalData, false);
+          expect(result['body'], 'test');
+          expect(result['additionalData']['keyNumber'] as int, 1);
+          expect(result['additionalData']['keyMap']['keyMap2'], 'value2');
+          expect(
+              result['additionalData']['keyMapChild']['keyMapChild3']
+                  ['keyMapChild32'],
+              'value3');
+          expect(
+              result['additionalData']['itbl']['isGhostPush'] as bool, isFalse);
+          expect(result['additionalData']['itbl']['defaultAction']['type'],
+              'openApp');
+        });
+      });
 
-        expect(result['body'], 'test');
-        expect(result['additionalData']['keyNumber'] as int, 1);
-        expect(result['additionalData']['keyMap']['keyMap2'], 'value2');
-        expect(result['additionalData']['keyMapChild']['keyMapChild3']['keyMapChild32'], 'value3');
-        expect(result['additionalData']['itbl']['isGhostPush'] as bool, isFalse);
-        expect(result['additionalData']['itbl']['defaultAction']['type'], 'openApp');
+      group('when payload does not arrives clean', () {
+        test('should return a clear map', () {
+          final additionalData = buildPushNotificationMetadataIOSWithQuot();
+
+          final result = IterableFlutter.sanitizeArguments(additionalData);
+
+          expect(result['body'], 'test');
+          expect(result['additionalData']['keyNumber'] as int, 1);
+          expect(result['additionalData']['keyMap']['keyMap2'], 'value2');
+          expect(
+              result['additionalData']['keyMapChild']['keyMapChild3']
+                  ['keyMapChild32'],
+              'value3');
+          expect(
+              result['additionalData']['itbl']['isGhostPush'] as bool, isFalse);
+          expect(result['additionalData']['itbl']['defaultAction']['type'],
+              'openApp');
+        });
       });
     });
   });

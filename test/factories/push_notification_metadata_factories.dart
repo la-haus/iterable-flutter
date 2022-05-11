@@ -55,3 +55,29 @@ Map<dynamic, dynamic> buildPushNotificationMetadataIOS() {
     'body': 'test'
   };
 }
+
+Map<dynamic, dynamic> buildPushNotificationMetadataIOSWithQuot() {
+  return {
+    'title': 'HiPush',
+    'body': 'test',
+    'additionalData': {
+      'keyMap':
+      "{&quot;keyMap2&quot;:&quot;value2&quot;,&quot;keyMap1&quot;:&quot;value1&quot;,&quot;keyMap4&quot;:&quot;value4&quot;}",
+      'keyMapChild':
+      "{&quot;keyMapChild1&quot;:&quot;value2&quot;,&quot;keyMapChild2&quot;:&quot;value3&quot;,&quot;keyMapChild3&quot; "
+          ":{&quot;keyMapChild32&quot;:&quot;value3&quot;,&quot;keyMapChild31&quot;:&quot;value2&quot;,&quot;keyMapChild34&quot;:&quot;value4&quot;}}",
+      'itbl': {
+        "defaultAction": {"type": "openApp"},
+        "isGhostPush": false,
+        "messageId": "messageIdValue",
+        "actionButtons": [],
+        "templateId": 10
+      },
+      'keyNumber': 1,
+      'body': 'test',
+      'title': 'HiPush',
+      'actionIdentifier': 'default',
+      'key': 'value1'
+    }
+  };
+}
