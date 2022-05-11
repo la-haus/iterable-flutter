@@ -15,8 +15,8 @@ void main() {
   const String userId = '11111';
   const String event = 'my_event';
 
-  const contentBody = "Test body push";
-  const keyBody = "body";
+  const contentBody = { 'testKey' : "Test body push"};
+  const keyBody = "additionalData";
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -150,7 +150,7 @@ void main() {
 
         final additionalData = buildPushNotificationMetadataAndroid();
 
-        final result = IterableFlutter.sanitizeArguments(additionalData, true);
+        final result = IterableFlutter.sanitizeArguments(additionalData);
 
         expect(result['body'], 'test');
         expect(result['additionalData']['keyNumber'] as int, 1);
@@ -167,7 +167,7 @@ void main() {
 
         final additionalData = buildPushNotificationMetadataIOS();
 
-        final result = IterableFlutter.sanitizeArguments(additionalData, false);
+        final result = IterableFlutter.sanitizeArguments(additionalData);
 
         expect(result['body'], 'test');
         expect(result['additionalData']['keyNumber'] as int, 1);
