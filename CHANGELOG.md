@@ -1,3 +1,7 @@
+## 0.5.5
+### Fix
+- fix(PayLoad Push): IOS SDK sends the push payload encoded sometimes.
+
 ## 0.5.4
 ### Features
 - feat(Data Push): have a single delivery format of the push notification metadata. 🧾 #47.
