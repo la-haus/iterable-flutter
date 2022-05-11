@@ -1,3 +1,7 @@
+## 0.5.5
+### Fix
+- fix(PayLoad Push): In some cases IOS can also send the objects as a string this makes the reading fail.
+
 ## 0.5.4
 ### Features
 - feat(Data Push): have a single delivery format of the push notification metadata. 🧾 #47.
