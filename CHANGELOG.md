@@ -1,6 +1,6 @@
 ## 0.5.5
 ### Fix
-- fix(PayLoad Push): In some cases IOS can also send the objects as a string this makes the reading fail.
+- fix(PayLoad Push): IOS SDK sends the push payload encoded sometimes.
 
 ## 0.5.4
 ### Features
