@@ -79,8 +79,7 @@ class IterableFlutter {
   }
 
   static Map<String, dynamic> sanitizeArguments(
-    Map<dynamic, dynamic> arguments,
-  ) {
+      Map<dynamic, dynamic> arguments) {
     final result = arguments;
 
     final data = result['additionalData'];
