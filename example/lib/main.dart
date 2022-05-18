@@ -54,7 +54,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> track(String event) async {
-    await IterableFlutter.track(event);
+    await IterableFlutter.track(event, dataFields: {
+      "foo": "bar",
+      "baz": 123,
+    });
   }
 
   Future<void> signOut() async {
@@ -111,7 +114,7 @@ class _MyAppState extends State<MyApp> {
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (value) {
                   setEmail(value);
-                  track('event_tracking_ios');
+                  track('event_tracking_flutter');
                 },
                 decoration: InputDecoration(
                   border: UnderlineInputBorder(),
@@ -137,7 +140,7 @@ class _MyAppState extends State<MyApp> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                  signOut();
+                signOut();
               },
               child: Text('Sign Out'),
             ),

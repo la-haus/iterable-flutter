@@ -37,8 +37,11 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             
             result(nil)
         case "track":
-            let eventName = call.arguments as! String
-            IterableAPI.track(event: eventName)
+            let args = getPropertiesFromArguments(call.arguments)
+            let eventName = args["event"] as! String
+            let dataFields = args["data_fields"] as? [String : Any]
+            
+            IterableAPI.track(event: eventName, dataFields: dataFields)
             
             result(nil)
          case "checkRecentNotification":

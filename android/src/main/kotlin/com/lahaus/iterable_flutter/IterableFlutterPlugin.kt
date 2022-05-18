@@ -20,119 +20,130 @@ import java.util.*
 /** IterableFlutterPlugin */
 class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
-  private val methodChannelName = "iterable_flutter"
+    private val methodChannelName = "iterable_flutter"
 
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private lateinit var channel: MethodChannel
+    /// The MethodChannel that will the communication between Flutter and native Android
+    ///
+    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
+    /// when the Flutter Engine is detached from the Activity
+    private lateinit var channel: MethodChannel
 
-  private lateinit var context: Context
+    private lateinit var context: Context
 
-  override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    context = flutterPluginBinding.applicationContext
+    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        context = flutterPluginBinding.applicationContext
 
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, methodChannelName)
-    channel.setMethodCallHandler(this)
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, methodChannelName)
+        channel.setMethodCallHandler(this)
 
-  }
+    }
 
-  override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
 
-    when (call.method) {
-      "initialize" -> {
-        val apiKey = call.argument<String>("apiKey") ?: ""
-        val pushIntegrationName = call.argument<String>("pushIntegrationName") ?: ""
-        val activeLogDebug = call.argument<Boolean>("activeLogDebug") ?: false
+        when (call.method) {
+            "initialize" -> {
+                val apiKey = call.argument<String>("apiKey") ?: ""
+                val pushIntegrationName = call.argument<String>("pushIntegrationName") ?: ""
+                val activeLogDebug = call.argument<Boolean>("activeLogDebug") ?: false
 
-        if (apiKey.isNotEmpty() && pushIntegrationName.isNotEmpty()) {
-          initialize(apiKey, pushIntegrationName, activeLogDebug)
+                if (apiKey.isNotEmpty() && pushIntegrationName.isNotEmpty()) {
+                    initialize(apiKey, pushIntegrationName, activeLogDebug)
+                }
+                result.success(null)
+            }
+            "setEmail" -> {
+                val userEmail = call.arguments as String
+                IterableApi.getInstance().setEmail(userEmail)
+                IterableApi.getInstance().registerForPush()
+                result.success(null)
+            }
+            "setUserId" -> {
+                IterableApi.getInstance().setUserId(call.arguments as String)
+                IterableApi.getInstance().registerForPush()
+                result.success(null)
+            }
+            "track" -> onTrack(call, result)
+            "registerForPush" -> {
+                IterableApi.getInstance().registerForPush()
+                result.success(null)
+            }
+            "signOut" -> {
+                IterableApi.getInstance().disablePush()
+                result.success(null)
+            }
+            "checkRecentNotification" -> {
+                notifyPushNotificationOpened()
+                result.success(null)
+            }
+            "updateUser" -> {
+                val userInfo = call.argument<Map<String, Any>?>("params")
+                IterableApi.getInstance().updateUser(JSONObject(userInfo))
+            }
+            else -> {
+                result.notImplemented()
+            }
         }
-        result.success(null)
-      }
-      "setEmail" -> {
-        val userEmail = call.arguments as String
-        IterableApi.getInstance().setEmail(userEmail)
-        IterableApi.getInstance().registerForPush()
-        result.success(null)
-      }
-      "setUserId" -> {
-        IterableApi.getInstance().setUserId(call.arguments as String)
-        IterableApi.getInstance().registerForPush()
-        result.success(null)
-      }
-      "track" -> {
-        IterableApi.getInstance().track(call.arguments as String)
-        result.success(null)
-      }
-      "registerForPush" -> {
-        IterableApi.getInstance().registerForPush()
-        result.success(null)
-      }
-      "signOut" -> {
-        IterableApi.getInstance().disablePush()
-        result.success(null)
-      }
-      "checkRecentNotification" -> {
-        notifyPushNotificationOpened()
-        result.success(null)
-      }
-      "updateUser" -> {
-        var userInfo = call.argument<Map<String, Any>?>("params")
-        IterableApi.getInstance().updateUser(JSONObject(userInfo))
-      }
-      else -> {
-        result.notImplemented()
-      }
-    }
-  }
-
-  private fun initialize(apiKey: String, pushIntegrationName: String, activeLogDebug: Boolean) {
-    val configBuilder = IterableConfig.Builder()
-      .setPushIntegrationName(pushIntegrationName)
-      .setAutoPushRegistration(false)
-      .setCustomActionHandler { _, _ ->
-        notifyPushNotificationOpened()
-        false
-      }
-
-    if (activeLogDebug) {
-      configBuilder.setLogLevel(Log.DEBUG)
     }
 
-    IterableApi.initialize(context, apiKey, configBuilder.build())
-  }
+    private fun onTrack(call: MethodCall, result: Result) {
+        val eventName = call.argument<String>("event")
+        val dataFields = call.argument<Map<String, Any>?>("data_fields")?.let { JSONObject(it) }
 
-  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
-  }
+        if (eventName == null) {
+            result.error("null_parameter", "event_name argument is required.", null)
+            return
+        }
 
-  private fun notifyPushNotificationOpened() {
-    val bundleData = IterableApi.getInstance().payloadData
+        IterableApi.getInstance().track(eventName, dataFields)
 
-    bundleData?.let {
-      val pushData = clearPushData(it)
-      channel.invokeMethod("openedNotificationHandler", pushData)
-    }
-  }
-
-  private fun clearPushData(bundleData: Bundle): Map<String, Any?> {
-
-    val mapPushData = bundleToMap(bundleData)
-    return NotificationParser().parse(mapPushData)
-  }
-
-  private fun bundleToMap(extras: Bundle): Map<String, Any?> {
-
-    val map: MutableMap<String, Any?> = HashMap()
-    val keySetValue = extras.keySet()
-    val iterator: Iterator<String> = keySetValue.iterator()
-    while (iterator.hasNext()) {
-      val key = iterator.next()
-      map[key] = extras[key]
+        result.success(null)
     }
 
-    return map
-  }
+    private fun initialize(apiKey: String, pushIntegrationName: String, activeLogDebug: Boolean) {
+        val configBuilder = IterableConfig.Builder()
+            .setPushIntegrationName(pushIntegrationName)
+            .setAutoPushRegistration(false)
+            .setCustomActionHandler { _, _ ->
+                notifyPushNotificationOpened()
+                false
+            }
+
+        if (activeLogDebug) {
+            configBuilder.setLogLevel(Log.DEBUG)
+        }
+
+        IterableApi.initialize(context, apiKey, configBuilder.build())
+    }
+
+    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+        channel.setMethodCallHandler(null)
+    }
+
+    private fun notifyPushNotificationOpened() {
+        val bundleData = IterableApi.getInstance().payloadData
+
+        bundleData?.let {
+            val pushData = clearPushData(it)
+            channel.invokeMethod("openedNotificationHandler", pushData)
+        }
+    }
+
+    private fun clearPushData(bundleData: Bundle): Map<String, Any?> {
+
+        val mapPushData = bundleToMap(bundleData)
+        return NotificationParser().parse(mapPushData)
+    }
+
+    private fun bundleToMap(extras: Bundle): Map<String, Any?> {
+
+        val map: MutableMap<String, Any?> = HashMap()
+        val keySetValue = extras.keySet()
+        val iterator: Iterator<String> = keySetValue.iterator()
+        while (iterator.hasNext()) {
+            val key = iterator.next()
+            map[key] = extras[key]
+        }
+
+        return map
+    }
 }
