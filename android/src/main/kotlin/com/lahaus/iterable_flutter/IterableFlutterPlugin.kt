@@ -81,6 +81,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
       "updateUser" -> {
         var userInfo = call.argument<Map<String, Any>?>("params")
         IterableApi.getInstance().updateUser(JSONObject(userInfo))
+        result.success(null)
       }
       else -> {
         result.notImplemented()
