@@ -1,3 +1,7 @@
+## 0.5.6
+### Fix
+- fix(UpdateUser): waiting for user update never ends on Android #54
+
 ## 0.5.5
 ### Fix
 - fix(PayLoad Push): IOS SDK sends the push payload encoded sometimes.
