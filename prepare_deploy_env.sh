@@ -25,6 +25,7 @@ if [ -z "${PUB_DEV_PUBLISH_EXPIRATION}" ]; then
 fi
 
 # Create credentials.json file.
+mkdir ~/.pub-cache/
 cat <<EOF > ~/.pub-cache/credentials.json
 {
   "accessToken":"${PUB_DEV_PUBLISH_ACCESS_TOKEN}",
