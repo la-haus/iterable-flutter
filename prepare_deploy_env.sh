@@ -25,12 +25,13 @@ if [ -z "${PUB_DEV_PUBLISH_EXPIRATION}" ]; then
 fi
 
 # Create credentials.json file.
-mkdir ~/.pub-cache/
-cat <<EOF > ~/.pub-cache/credentials.json
+mkdir -p $HOME/.config/dart
+cat <<EOF > $HOME/.config/dart/pub-credentials.json
 {
   "accessToken":"${PUB_DEV_PUBLISH_ACCESS_TOKEN}",
   "refreshToken":"${PUB_DEV_PUBLISH_REFRESH_TOKEN}",
   "tokenEndpoint":"${PUB_DEV_PUBLISH_TOKEN_ENDPOINT}",
+  "idToken":"${PUB_DEV_PUBLISH_TOKEN_ID}"
   "scopes":["https://www.googleapis.com/auth/userinfo.email","openid"],
   "expiration":${PUB_DEV_PUBLISH_EXPIRATION}
 }
