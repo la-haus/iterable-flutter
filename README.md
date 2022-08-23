@@ -14,16 +14,16 @@ Flutter plugin to support Android and iOS push notifications from [https://itera
 To use this plugin, add `iterable_flutter` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 
 ### Supported methods
-| Method | Android | iOS | Web |
-|---|---|---|---|
-| `initialize` | X | X | |
-| `setEmail` | X | X | |
-| `setUserId` | X | X | |
-| `registerForPush` | X | X | |
-| `updateUser` | X | X | |
-| `signOut` | X | X | |
-| `track` | X | X | |
-| `setNotificationOpenedHandler` | X | X | |
+| Method | Android | iOS | Web | MacOS | Windows | Linux |
+|---|---|---|---|---|---|---|
+| `initialize` | X | X | | | | |
+| `setEmail` | X | X | | | | |
+| `setUserId` | X | X | | | | |
+| `registerForPush` | X | X | | | | |
+| `updateUser` | X | X | | | | |
+| `signOut` | X | X | | | | |
+| `track` | X | X | | | | |
+| `setNotificationOpenedHandler` | X | X | | | | |
 
 ## Installation
 1. Add `iterable_flutter` as a plugin in `pubspec.yaml` with the version you need like this:
