@@ -4,14 +4,14 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'iterable_flutter'
-  s.version          = '0.0.1'
-  s.summary          = 'A new flutter plugin project.'
+  s.version          = '0.5.7'
+  s.summary          = 'Flutter implementation for iterable.com Cross Channel Marketing Platform'
   s.description      = <<-DESC
-A new flutter plugin project.
+  Flutter implementation for iterable.com Cross Channel Marketing Platform
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/la-haus/iterable-flutter'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'La Haus' => 'email@example.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'

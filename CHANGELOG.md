@@ -1,3 +1,6 @@
+## 0.5.7
+- build(Dependencies): update iterable android and iOS dependencies #57
+
 ## 0.5.6
 ### Fix
 - fix(UpdateUser): waiting for user update never ends on Android #54

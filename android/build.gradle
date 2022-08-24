@@ -1,5 +1,5 @@
 group 'com.lahaus.iterable_flutter'
-version '1.0-SNAPSHOT'
+version '0.5.7'
 
 buildscript {
     ext.kotlin_version = '1.6.21'
