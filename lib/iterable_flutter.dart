@@ -82,15 +82,17 @@ class IterableFlutter {
       Map<dynamic, dynamic> arguments) {
     final result = arguments;
 
-    final data = result['additionalData'];
+    final data = (result['itbl'] is String)
+        ? _stringJsonToMap(result['itbl'])
+        : result['itbl'];
     data.forEach((key, value) {
       if (value is String) {
-        if (value[0] == '{' && value[value.length - 1] == '}') {
+        if (value.isNotEmpty && [0] == '{' && value[value.length - 1] == '}') {
           data[key] = _stringJsonToMap(value);
         }
       }
     });
-    result['additionalData'] = data;
+    result['itbl'] = data;
 
     return Map<String, dynamic>.from(result);
   }

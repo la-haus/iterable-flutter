@@ -30,7 +30,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
   private lateinit var context: Context
 
-  override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+  override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     context = flutterPluginBinding.applicationContext
 
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, methodChannelName)
@@ -38,7 +38,11 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
   }
 
-  override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    channel.setMethodCallHandler(null)
+  }
+
+  override fun onMethodCall(call: MethodCall, result: Result) {
 
     when (call.method) {
       "initialize" -> {
@@ -79,7 +83,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         result.success(null)
       }
       "updateUser" -> {
-        var userInfo = call.argument<Map<String, Any>?>("params")
+        val userInfo = call.argument<Map<String, Any>?>("params")
         IterableApi.getInstance().updateUser(JSONObject(userInfo))
         result.success(null)
       }
@@ -93,9 +97,12 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
     val configBuilder = IterableConfig.Builder()
       .setPushIntegrationName(pushIntegrationName)
       .setAutoPushRegistration(false)
-      .setCustomActionHandler { _, _ ->
-        notifyPushNotificationOpened()
-        false
+      .setInAppHandler { _ ->
+        IterableInAppHandler.InAppResponse.SHOW
+      }
+      .setCustomActionHandler { action, context ->
+        notifyCustomAction(action)
+        true
       }
 
     if (activeLogDebug) {
@@ -105,23 +112,24 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
     IterableApi.initialize(context, apiKey, configBuilder.build())
   }
 
-  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
+  private fun notifyCustomAction(action: IterableAction) {
+    val actionData = mapOf(
+        "itbl" to mapOf(
+          "defaultAction" to mapOf(
+            "type" to action.type,
+            "data" to action.data
+          )
+      )
+    )
+    channel.invokeMethod("openedNotificationHandler", actionData)
   }
 
   private fun notifyPushNotificationOpened() {
-    val bundleData = IterableApi.getInstance().payloadData
-
-    bundleData?.let {
-      val pushData = clearPushData(it)
-      channel.invokeMethod("openedNotificationHandler", pushData)
-    }
-  }
-
-  private fun clearPushData(bundleData: Bundle): Map<String, Any?> {
-
-    val mapPushData = bundleToMap(bundleData)
-    return NotificationParser().parse(mapPushData)
+      val bundleData = IterableApi.getInstance().payloadData
+      bundleData?.let {
+        val pushData = bundleToMap(it)
+        channel.invokeMethod("openedNotificationHandler", pushData)
+      }
   }
 
   private fun bundleToMap(extras: Bundle): Map<String, Any?> {
