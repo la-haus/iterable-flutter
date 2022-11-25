@@ -1,57 +1,68 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-typedef OpenedNotificationHandler = void Function(Map openedResult);
+typedef IterableActionHandler = void Function(
+    Map<String, dynamic> openedResult);
 
 // ignore: avoid_classes_with_only_static_members
 class IterableFlutter {
   static const MethodChannel _channel = MethodChannel('iterable_flutter');
 
-  static OpenedNotificationHandler? _onOpenedNotification;
+  static IterableActionHandler? _actionHandler;
 
-  static Future<void> initialize({
+  const IterableFlutter._();
+  static IterableFlutter? _singleton;
+  static IterableFlutter get instance {
+    _singleton ??= IterableFlutter._();
+    return _singleton!;
+  }
+
+  Future<void> initialize({
     required String apiKey,
     required String pushIntegrationName,
     bool activeLogDebug = false,
+    List<String> allowedProtocols = const ['https'],
   }) async {
     await _channel.invokeMethod(
       'initialize',
       {
         'apiKey': apiKey,
         'pushIntegrationName': pushIntegrationName,
-        'activeLogDebug': activeLogDebug
+        'activeLogDebug': activeLogDebug,
+        'allowedProtocols': allowedProtocols,
       },
     );
-    _channel.setMethodCallHandler(nativeMethodCallHandler);
+    _channel.setMethodCallHandler(_nativeMethodCallHandler);
   }
 
-  static Future<void> setEmail(String email) async {
+  Future<void> setEmail(String email) async {
     await _channel.invokeMethod('setEmail', email);
   }
 
-  static Future<void> setUserId(String userId) async {
+  Future<void> setUserId(String userId) async {
     await _channel.invokeMethod('setUserId', userId);
   }
 
-  static Future<void> track(String event) async {
+  Future<void> track(String event) async {
     await _channel.invokeMethod('track', event);
   }
 
-  static Future<void> registerForPush() async {
+  Future<void> registerForPush() async {
     await _channel.invokeMethod('registerForPush');
   }
 
-  static Future<void> signOut() async {
+  Future<void> signOut() async {
     await _channel.invokeMethod('signOut');
   }
 
-  static Future<void> checkRecentNotification() async {
+  Future<void> checkRecentNotification() async {
     await _channel.invokeMethod('checkRecentNotification');
   }
 
-  static Future<void> updateUser({required Map<String, dynamic> params}) async {
+  Future<void> updateUser({required Map<String, dynamic> params}) async {
     await _channel.invokeMethod(
       'updateUser',
       {
@@ -61,41 +72,43 @@ class IterableFlutter {
   }
 
   // ignore: use_setters_to_change_properties
-  static void setNotificationOpenedHandler(OpenedNotificationHandler handler) {
-    _onOpenedNotification = handler;
+  void setIterableActionHandler(IterableActionHandler handler) {
+    _actionHandler = handler;
   }
 
-  static Future<dynamic> nativeMethodCallHandler(MethodCall methodCall) async {
+  Future<dynamic> _nativeMethodCallHandler(MethodCall methodCall) async {
     final arguments = methodCall.arguments as Map<dynamic, dynamic>;
     final argumentsCleaned = sanitizeArguments(arguments);
 
     switch (methodCall.method) {
-      case "openedNotificationHandler":
-        _onOpenedNotification?.call(argumentsCleaned);
-        return "This data from native.....";
+      case "actionHandler":
+        _actionHandler?.call(argumentsCleaned);
+        return;
       default:
-        return "Nothing";
+        return;
     }
   }
 
-  static Map<String, dynamic> sanitizeArguments(
-      Map<dynamic, dynamic> arguments) {
+  @visibleForTesting
+  Map<String, dynamic> sanitizeArguments(Map<dynamic, dynamic> arguments) {
     final result = arguments;
 
-    final data = result['additionalData'];
+    final data = (result['itbl'] is String)
+        ? _stringJsonToMap(result['itbl'])
+        : result['itbl'];
     data.forEach((key, value) {
       if (value is String) {
-        if (value[0] == '{' && value[value.length - 1] == '}') {
+        if (value.isNotEmpty && [0] == '{' && value[value.length - 1] == '}') {
           data[key] = _stringJsonToMap(value);
         }
       }
     });
-    result['additionalData'] = data;
+    result['itbl'] = data;
 
     return Map<String, dynamic>.from(result);
   }
 
-  static Map<dynamic, dynamic> _stringJsonToMap(String stringJson) {
+  Map<dynamic, dynamic> _stringJsonToMap(String stringJson) {
     final stringClean = stringJson.replaceAll('&quot;', '"');
 
     return jsonDecode(stringClean) as Map<dynamic, dynamic>;

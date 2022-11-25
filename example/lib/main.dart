@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
         ? FlutterConfig.get('ITERABLE_PUSH_INTEGRATION_NAME_ANDROID')
         : FlutterConfig.get('ITERABLE_PUSH_INTEGRATION_NAME_IOS');
 
-    return await IterableFlutter.initialize(
+    return await IterableFlutter.instance.initialize(
       apiKey: apiKey,
       pushIntegrationName: pushIntegrationName,
     );
@@ -44,38 +44,38 @@ class _MyAppState extends State<MyApp> {
   /// Don't set an email and user ID in the same session.
   /// Doing so causes the SDK to treat them as different users.
   Future<void> setEmail(String email) async {
-    await IterableFlutter.setEmail(email);
+    await IterableFlutter.instance.setEmail(email);
   }
 
   /// Don't set an email and user ID in the same session.
   /// Doing so causes the SDK to treat them as different users.
   Future<void> setUserId(String userId) async {
-    await IterableFlutter.setUserId(userId);
+    await IterableFlutter.instance.setUserId(userId);
   }
 
   Future<void> track(String event) async {
-    await IterableFlutter.track(event);
+    await IterableFlutter.instance.track(event);
   }
 
   Future<void> signOut() async {
-    await IterableFlutter.signOut();
+    await IterableFlutter.instance.signOut();
   }
 
   /// Call it to register device for current user if calling setEmail or
   /// setUserId after the app has already launched
   /// (for example, when a new user logs in)
   Future<void> registerForPush() async {
-    await IterableFlutter.registerForPush();
+    await IterableFlutter.instance.registerForPush();
   }
 
   Future<void> updateUser(Map<String, dynamic> userInfo) async {
-    await IterableFlutter.updateUser(params: userInfo);
+    await IterableFlutter.instance.updateUser(params: userInfo);
   }
 
   Map<dynamic, dynamic> pushData = {};
 
   void listener() {
-    IterableFlutter.setNotificationOpenedHandler((openedResult) {
+    IterableFlutter.instance.setIterableActionHandler((openedResult) {
       setPushData(openedResult);
     });
   }
@@ -137,7 +137,7 @@ class _MyAppState extends State<MyApp> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                  signOut();
+                signOut();
               },
               child: Text('Sign Out'),
             ),
