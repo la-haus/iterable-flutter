@@ -53,7 +53,7 @@ void main() {
   });
 
   test('initialize', () async {
-    await IterableFlutter.initialize(
+    await IterableFlutter.instance.initialize(
       apiKey: apiKey,
       pushIntegrationName: pushIntegrationName,
     );
@@ -70,75 +70,74 @@ void main() {
   });
 
   test('setEmail', () async {
-    await IterableFlutter.setEmail(email);
+    await IterableFlutter.instance.setEmail(email);
     expect(calledMethod, <Matcher>[
       isMethodCall('setEmail', arguments: email),
     ]);
   });
 
   test('setUserId', () async {
-    await IterableFlutter.setUserId(userId);
+    await IterableFlutter.instance.setUserId(userId);
     expect(calledMethod, <Matcher>[
       isMethodCall('setUserId', arguments: userId),
     ]);
   });
 
   test('track', () async {
-    await IterableFlutter.track(event);
+    await IterableFlutter.instance.track(event);
     expect(calledMethod, <Matcher>[
       isMethodCall('track', arguments: event),
     ]);
   });
 
   test('registerForPush', () async {
-    await IterableFlutter.registerForPush();
+    await IterableFlutter.instance.registerForPush();
     expect(calledMethod, <Matcher>[
       isMethodCall('registerForPush', arguments: null),
     ]);
   });
 
   test('signOut', () async {
-    await IterableFlutter.signOut();
+    await IterableFlutter.instance.signOut();
     expect(calledMethod, <Matcher>[
       isMethodCall('signOut', arguments: null),
     ]);
   });
 
   test('checkRecentNotification', () async {
-    await IterableFlutter.checkRecentNotification();
+    await IterableFlutter.instance.checkRecentNotification();
     expect(calledMethod, <Matcher>[
       isMethodCall('checkRecentNotification', arguments: null),
     ]);
   });
 
-  test("openedNotificationHandler", () async {
-    IterableFlutter.initialize(
+  test("actionHandler", () async {
+    IterableFlutter.instance.initialize(
       apiKey: apiKey,
       pushIntegrationName: pushIntegrationName,
     );
 
     dynamic pushData;
 
-    IterableFlutter.setNotificationOpenedHandler((openedResultMap) {
+    IterableFlutter.instance.setIterableActionHandler((openedResultMap) {
       pushData = openedResultMap;
     });
 
-    await ServicesBinding.instance?.defaultBinaryMessenger
-        .handlePlatformMessage(
-            'iterable_flutter',
-            const StandardMethodCodec().encodeMethodCall(
-              const MethodCall(
-                'openedNotificationHandler',
-                {keyBody: contentBody},
-              ),
-            ),
-            (ByteData? data) {});
+    await ServicesBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
+        'iterable_flutter',
+        const StandardMethodCodec().encodeMethodCall(
+          const MethodCall(
+            'actionHandler',
+            {keyBody: contentBody},
+          ),
+        ),
+        (ByteData? data) {});
 
     expect(contentBody, pushData[keyBody]);
   });
 
   test('updateUser', () async {
-    await IterableFlutter.updateUser(params: {});
+    await IterableFlutter.instance.updateUser(params: {});
     expect(calledMethod, <Matcher>[
       isMethodCall('updateUser', arguments: {"params": {}}),
     ]);
@@ -149,7 +148,8 @@ void main() {
       test('should return a clear map', () {
         final additionalData = buildPushNotificationMetadataAndroid();
 
-        final result = IterableFlutter.sanitizeArguments(additionalData);
+        final result =
+            IterableFlutter.instance.sanitizeArguments(additionalData);
 
         expect(result['body'], 'test');
         expect(result['additionalData']['keyNumber'] as int, 1);
@@ -170,7 +170,8 @@ void main() {
         test('should return a clear map', () {
           final additionalData = buildPushNotificationMetadataIOS();
 
-          final result = IterableFlutter.sanitizeArguments(additionalData);
+          final result =
+              IterableFlutter.instance.sanitizeArguments(additionalData);
 
           expect(result['body'], 'test');
           expect(result['additionalData']['keyNumber'] as int, 1);
@@ -190,7 +191,8 @@ void main() {
         test('should return a clear map', () {
           final additionalData = buildPushNotificationMetadataIOSWithQuot();
 
-          final result = IterableFlutter.sanitizeArguments(additionalData);
+          final result =
+              IterableFlutter.instance.sanitizeArguments(additionalData);
 
           expect(result['body'], 'test');
           expect(result['additionalData']['keyNumber'] as int, 1);

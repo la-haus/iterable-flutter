@@ -1,147 +1,292 @@
 package com.lahaus.iterable_flutter
 
+import android.app.Activity
+import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.os.Debug
 import android.util.Log
-import androidx.annotation.NonNull
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.*
 import com.iterable.iterableapi.*
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.plugin.common.PluginRegistry.NewIntentListener
 import org.json.JSONObject
-import java.util.*
+import java.util.regex.Pattern
 
 
 /** IterableFlutterPlugin */
-class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
+class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, NewIntentListener,
+    Application.ActivityLifecycleCallbacks {
 
-  private val methodChannelName = "iterable_flutter"
+    private val methodChannelName = "iterable_flutter"
 
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private lateinit var channel: MethodChannel
+    /// The MethodChannel that will the communication between Flutter and native Android
+    ///
+    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
+    /// when the Flutter Engine is detached from the Activity
+    private lateinit var channel: MethodChannel
 
-  private lateinit var context: Context
+    private var context: Context? = null
+    private var activity: Activity? = null
+    private var activityPluginBinding: ActivityPluginBinding? = null
 
-  override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    context = flutterPluginBinding.applicationContext
+    // IterableAPI crashes when processing an appLink without being initialized
+    // persist the appLink here and handle after Iterable has ben initialized
+    private var isInitialized: Boolean = false
+    private var pendingAppLinkUrl: String? = null
 
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, methodChannelName)
-    channel.setMethodCallHandler(this)
+    // region FlutterPlugin
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        context = flutterPluginBinding.applicationContext
 
-  }
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, methodChannelName)
+        channel.setMethodCallHandler(this)
 
-  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
-  }
+    }
 
-  override fun onMethodCall(call: MethodCall, result: Result) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        channel.setMethodCallHandler(null)
+        activityPluginBinding = null
+        activity = null
+        context = null
+    }
+    // endregion
 
-    when (call.method) {
-      "initialize" -> {
-        val apiKey = call.argument<String>("apiKey") ?: ""
-        val pushIntegrationName = call.argument<String>("pushIntegrationName") ?: ""
-        val activeLogDebug = call.argument<Boolean>("activeLogDebug") ?: false
+    // region MethodCallHandler
+    override fun onMethodCall(call: MethodCall, result: Result) {
 
-        if (apiKey.isNotEmpty() && pushIntegrationName.isNotEmpty()) {
-          initialize(apiKey, pushIntegrationName, activeLogDebug)
+        when (call.method) {
+            "initialize" -> {
+                val apiKey = call.argument<String>("apiKey") ?: ""
+                val pushIntegrationName = call.argument<String>("pushIntegrationName") ?: ""
+                val activeLogDebug = call.argument<Boolean>("activeLogDebug") ?: false
+                val allowedProtocols =
+                    call.argument<List<String>>("allowedProtocols") ?: emptyList()
+
+                if (apiKey.isNotEmpty() && pushIntegrationName.isNotEmpty()) {
+                    initialize(apiKey, pushIntegrationName, activeLogDebug, allowedProtocols)
+                }
+                result.success(null)
+            }
+            "setEmail" -> {
+                val userEmail = call.arguments as String
+                IterableApi.getInstance().setEmail(userEmail)
+                IterableApi.getInstance().registerForPush()
+                result.success(null)
+            }
+            "setUserId" -> {
+                IterableApi.getInstance().setUserId(call.arguments as String)
+                IterableApi.getInstance().registerForPush()
+                result.success(null)
+            }
+            "track" -> {
+                IterableApi.getInstance().track(call.arguments as String)
+                result.success(null)
+            }
+            "registerForPush" -> {
+                IterableApi.getInstance().registerForPush()
+                result.success(null)
+            }
+            "signOut" -> {
+                IterableApi.getInstance().disablePush()
+                result.success(null)
+            }
+            "checkRecentNotification" -> {
+                notifyPushNotificationOpened()
+                result.success(null)
+            }
+            "updateUser" -> {
+                val userInfo = call.argument<Map<String, Any>?>("params")
+                IterableApi.getInstance().updateUser(JSONObject(userInfo))
+                result.success(null)
+            }
+            else -> {
+                result.notImplemented()
+            }
         }
-        result.success(null)
-      }
-      "setEmail" -> {
-        val userEmail = call.arguments as String
-        IterableApi.getInstance().setEmail(userEmail)
-        IterableApi.getInstance().registerForPush()
-        result.success(null)
-      }
-      "setUserId" -> {
-        IterableApi.getInstance().setUserId(call.arguments as String)
-        IterableApi.getInstance().registerForPush()
-        result.success(null)
-      }
-      "track" -> {
-        IterableApi.getInstance().track(call.arguments as String)
-        result.success(null)
-      }
-      "registerForPush" -> {
-        IterableApi.getInstance().registerForPush()
-        result.success(null)
-      }
-      "signOut" -> {
-        IterableApi.getInstance().disablePush()
-        result.success(null)
-      }
-      "checkRecentNotification" -> {
-        notifyPushNotificationOpened()
-        result.success(null)
-      }
-      "updateUser" -> {
-        val userInfo = call.argument<Map<String, Any>?>("params")
-        IterableApi.getInstance().updateUser(JSONObject(userInfo))
-        result.success(null)
-      }
-      else -> {
-        result.notImplemented()
-      }
-    }
-  }
-
-  private fun initialize(apiKey: String, pushIntegrationName: String, activeLogDebug: Boolean) {
-    val configBuilder = IterableConfig.Builder()
-      .setPushIntegrationName(pushIntegrationName)
-      .setAutoPushRegistration(false)
-      .setInAppHandler { _ ->
-        IterableInAppHandler.InAppResponse.SHOW
-      }
-      .setCustomActionHandler { action, context ->
-        notifyCustomAction(action)
-        true
-      }
-
-    if (activeLogDebug) {
-      configBuilder.setLogLevel(Log.DEBUG)
     }
 
-    IterableApi.initialize(context, apiKey, configBuilder.build())
-  }
+    private fun initialize(
+        apiKey: String,
+        pushIntegrationName: String,
+        activeLogDebug: Boolean,
+        allowedProtocols: List<String>
+    ) {
+        val configBuilder = IterableConfig.Builder()
+            .setPushIntegrationName(pushIntegrationName)
+            .setAutoPushRegistration(false)
+            .setInAppHandler {
+                IterableInAppHandler.InAppResponse.SHOW
+            }
+            .setAllowedProtocols(allowedProtocols.toTypedArray())
+            .setUrlHandler { _, context ->
+                notifyIterableAction(context)
+                true
+            }
+            .setCustomActionHandler { _, context ->
+                notifyIterableAction(context)
+                true
+            }
 
-  private fun notifyCustomAction(action: IterableAction) {
-    val actionData = mapOf(
-        "itbl" to mapOf(
-          "defaultAction" to mapOf(
-            "type" to action.type,
-            "data" to action.data
-          )
-      )
-    )
-    channel.invokeMethod("openedNotificationHandler", actionData)
-  }
+        if (activeLogDebug) {
+            configBuilder.setLogLevel(Log.DEBUG)
+        }
+        LogUtils.enabled = activeLogDebug
 
-  private fun notifyPushNotificationOpened() {
-      val bundleData = IterableApi.getInstance().payloadData
-      bundleData?.let {
-        val pushData = bundleToMap(it)
-        channel.invokeMethod("openedNotificationHandler", pushData)
-      }
-  }
+        context?.let { IterableApi.initialize(it, apiKey, configBuilder.build()) }
 
-  private fun bundleToMap(extras: Bundle): Map<String, Any?> {
-
-    val map: MutableMap<String, Any?> = HashMap()
-    val keySetValue = extras.keySet()
-    val iterator: Iterator<String> = keySetValue.iterator()
-    while (iterator.hasNext()) {
-      val key = iterator.next()
-      map[key] = extras[key]
+        // Maybe handle pending app link
+        isInitialized = true
+        pendingAppLinkUrl?.let { IterableApi.getInstance().handleAppLink(it) }
     }
 
-    return map
-  }
+    private fun notifyIterableAction(context: IterableActionContext) {
+        val source: String = when (context.source) {
+            IterableActionSource.PUSH -> {
+                if (IterableApi.getInstance().payloadData != null) {
+                    return notifyPushNotificationOpened()
+                } else {
+                    "push"
+                }
+            }
+            IterableActionSource.APP_LINK -> "appLink"
+            IterableActionSource.IN_APP -> "inApp"
+        }
+        val actionData = mapOf(
+            "itbl" to mapOf(
+                "defaultAction" to mapOf(
+                    "type" to context.action.type,
+                    "data" to context.action.data
+                )
+            ),
+            "source" to source,
+        )
+        LogUtils.debug("notifyIterableAction with data $actionData")
+        channel.invokeMethod("actionHandler", actionData)
+    }
+
+    // region Push
+    private fun notifyPushNotificationOpened() {
+        val bundleData = IterableApi.getInstance().payloadData
+        bundleData?.let {
+            val pushData = bundleToMap(it).toMutableMap()
+            pushData["source"] = "push"
+            LogUtils.debug("notifyPushNotificationOpened with data $pushData")
+            channel.invokeMethod("actionHandler", pushData)
+        }
+    }
+
+    private fun bundleToMap(extras: Bundle): Map<String, Any?> {
+
+        val map: MutableMap<String, Any?> = HashMap()
+        val keySetValue = extras.keySet()
+        val iterator: Iterator<String> = keySetValue.iterator()
+        while (iterator.hasNext()) {
+            val key = iterator.next()
+            val value = extras.get(key)
+            if (value is Bundle) {
+                map[key] = bundleToMap(value)
+            } else {
+                map[key] = value
+            }
+        }
+
+        return map
+    }
+    // endregion
+
+    // region AppLinks
+    private fun handleIntent(intent: Intent?): Boolean {
+        // Check intent contains an Iterable AppLink
+        if (intent == null) return false
+        if (intent.action != Intent.ACTION_VIEW) return false
+        val url = intent.dataString ?: return false
+        if (!isIterableDeeplink(url)) return false
+        LogUtils.debug("handleIntent with Iterable deeplink $url")
+        // Overwrite the intent to make sure we don't open the deep link
+        // again when the user opens our app later from the task manager
+        activity?.intent = Intent(Intent.ACTION_MAIN)
+        // Handle app link in Iterable's Url Handler
+        return if (isInitialized) {
+        return IterableApi.getInstance().handleAppLink(url)
+        } else {
+            pendingAppLinkUrl = url
+            true
+        }
+    }
+
+    private fun isIterableDeeplink(url: String): Boolean {
+        val deeplinkPattern = Pattern.compile(IterableConstants.ITBL_DEEPLINK_IDENTIFIER)
+        val m = deeplinkPattern.matcher(url)
+        if (m.find()) {
+            return true
+        }
+        return false
+    }
+
+    // region ActivityAware: handle Intent for App Links
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        binding.activity.let {
+            this.activity = it
+            it.application.registerActivityLifecycleCallbacks(this)
+            if (it is FlutterFragmentActivity) {
+                handleIntent(it.intent)
+            }
+        }
+        activityPluginBinding = binding
+        activityPluginBinding?.addOnNewIntentListener(this)
+    }
+
+    override fun onDetachedFromActivity() {
+        activityPluginBinding?.removeOnNewIntentListener(this)
+        this.activity = null
+    }
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) =
+        onAttachedToActivity(binding)
+
+    override fun onDetachedFromActivityForConfigChanges() = onDetachedFromActivity()
+    // endregion
+
+    // region NewIntentListener: handle Intent for App Links
+    override fun onNewIntent(intent: Intent): Boolean = handleIntent(intent)
+    // endregion
+
+    // region Application.ActivityLifecycleCallbacks: handle Intent for App Links
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        LogUtils.debug("onActivityCreated called")
+        handleIntent(activity.intent)
+    }
+
+    override fun onActivityStarted(activity: Activity) {
+        // Do nothing
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+        // Do nothing
+    }
+
+    override fun onActivityPaused(activity: Activity) {
+        // Do nothing
+    }
+
+    override fun onActivityStopped(activity: Activity) {
+        // Do nothing
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        // Do nothing
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+        activity.application.unregisterActivityLifecycleCallbacks(this)
+    }
+    // endregion
+    // endregion
 }
