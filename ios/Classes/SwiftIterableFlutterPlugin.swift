@@ -87,6 +87,8 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
                 mobileInboxViewController = viewController
             }
             result(nil)
+        case "getUnreadInboxMessagesCount":
+            result(IterableAPI.inAppManager.getUnreadInboxMessagesCount())
         default:
             result(FlutterMethodNotImplemented)
         }

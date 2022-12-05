@@ -86,6 +86,10 @@ class IterableFlutter {
     );
   }
 
+  Future<int?> getUnreadInboxMessagesCount() {
+    return _channel.invokeMethod<int>('getUnreadInboxMessagesCount');
+  }
+
   // ignore: use_setters_to_change_properties
   void setIterableActionHandler(IterableActionHandler handler) {
     _actionHandler = handler;

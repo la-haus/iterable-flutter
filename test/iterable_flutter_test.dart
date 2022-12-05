@@ -41,6 +41,10 @@ void main() {
           return null;
         case 'updateUser':
           return null;
+        case 'showMobileInbox':
+          return null;
+        case 'getUnreadInboxMessagesCount':
+          return 1;
         default:
           return null;
       }
@@ -154,6 +158,14 @@ void main() {
         "noMessagesBody": "Check later",
       }),
     ]);
+  });
+
+  test('getUnreadInboxMessagesCount', () async {
+    final count = await IterableFlutter.instance.getUnreadInboxMessagesCount();
+    expect(calledMethod, <Matcher>[
+      isMethodCall('getUnreadInboxMessagesCount', arguments: null),
+    ]);
+    assert(count == 1);
   });
 
   group('.sanitizeMap', () {

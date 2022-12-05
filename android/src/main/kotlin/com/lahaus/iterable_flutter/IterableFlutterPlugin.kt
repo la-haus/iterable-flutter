@@ -123,6 +123,9 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
                 }
                 result.success(null)
             }
+            "getUnreadInboxMessagesCount" -> {
+                result.success(IterableApi.getInstance().inAppManager.unreadInboxMessagesCount)
+            }
             else -> {
                 result.notImplemented()
             }
