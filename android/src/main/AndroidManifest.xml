@@ -1,3 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.lahaus.iterable_flutter">
+    package="com.lahaus.iterable_flutter" >
+
+    <application>
+        <activity
+            android:name="com.lahaus.iterable_flutter.MobileInboxActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:exported="false" >
+        </activity>
+    </application>
+
 </manifest>

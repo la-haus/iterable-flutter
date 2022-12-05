@@ -142,6 +142,19 @@ void main() {
       isMethodCall('updateUser', arguments: {"params": {}}),
     ]);
   });
+  test('showMobileInbox', () async {
+    await IterableFlutter.instance.showMobileInbox(
+        screenTitle: "Inbox",
+        noMessagesTitle: "No messages",
+        noMessagesBody: "Check later");
+    expect(calledMethod, <Matcher>[
+      isMethodCall('showMobileInbox', arguments: {
+        "screenTitle": "Inbox",
+        "noMessagesTitle": "No messages",
+        "noMessagesBody": "Check later",
+      }),
+    ]);
+  });
 
   group('.sanitizeMap', () {
     group('when metadata comes from Android', () {

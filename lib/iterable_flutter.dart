@@ -71,6 +71,21 @@ class IterableFlutter {
     );
   }
 
+  Future<void> showMobileInbox({
+    String? screenTitle,
+    String? noMessagesTitle,
+    String? noMessagesBody,
+  }) async {
+    await _channel.invokeMethod(
+      'showMobileInbox',
+      {
+        'screenTitle': screenTitle,
+        'noMessagesTitle': noMessagesTitle,
+        'noMessagesBody': noMessagesBody,
+      },
+    );
+  }
+
   // ignore: use_setters_to_change_properties
   void setIterableActionHandler(IterableActionHandler handler) {
     _actionHandler = handler;
