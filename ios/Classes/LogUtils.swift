@@ -11,10 +11,8 @@ struct LogUtils {
     static var enabled: Bool = true
     
     static func debug(message: String, tag: String = "SwiftIterableFlutterPlugin") {
-        #if DEBUG
         if enabled {
             print("\(tag): \(message)")
         }
-        #endif
     }
 }
