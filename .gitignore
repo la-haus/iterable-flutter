@@ -2,3 +2,5 @@ example/ios/Podfile.lock
 example/pubspec.lock
 .DS_Store
 .dart_tool/
+.vscode
+build/

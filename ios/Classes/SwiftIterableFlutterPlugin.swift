@@ -9,6 +9,8 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
     
     var launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     
+    private weak var mobileInboxViewController: UIViewController? = nil
+    
     public static func register(with registrar: FlutterPluginRegistrar) {
         channel = FlutterMethodChannel(name: "iterable_flutter", binaryMessenger: registrar.messenger())
         let instance = SwiftIterableFlutterPlugin()
@@ -65,6 +67,28 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
             signOut()
             
             result(nil)
+        case "showMobileInbox":
+            if let rootViewController = getRootViewController() {
+                let args = getPropertiesFromArguments(call.arguments)
+                
+                let viewController = IterableInboxNavigationViewController()
+                if let screenTitle = args["screenTitle"] as? String {
+                    viewController.navTitle = screenTitle
+                }
+                if let noMessagesTitle = args["noMessagesTitle"] as? String {
+                    viewController.noMessagesTitle = noMessagesTitle
+                }
+                if let noMessagesBody = args["noMessagesBody"] as? String {
+                    viewController.noMessagesBody = noMessagesBody
+                }
+                
+                viewController.modalPresentationStyle = .fullScreen
+                rootViewController.present(viewController, animated: true)
+                mobileInboxViewController = viewController
+            }
+            result(nil)
+        case "getUnreadInboxMessagesCount":
+            result(IterableAPI.inAppManager.getUnreadInboxMessagesCount())
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -141,7 +165,33 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
             ],
             "source": source
         ]
+        
+        // Maybe dismiss mobile inbox
+        if mobileInboxViewController?.isViewLoaded == true {
+            LogUtils.debug(message: "dismiss mobileInboxViewController")
+            getRootViewController()?.dismiss(animated: true)
+            mobileInboxViewController = nil
+        }
+        
+        LogUtils.debug(message: "notifyIterableAction with data \(arguments)")
         channel.invokeMethod("actionHandler", arguments: arguments)
+    }
+    
+    private func getWindow() -> UIWindow? {
+        var keyWindow: UIWindow? = nil
+        for window in UIApplication.shared.windows {
+            if window.isKeyWindow {
+                keyWindow = window
+                break
+            }
+        }
+        return keyWindow
+    }
+    
+    private func getRootViewController() -> UIViewController? {
+        guard let window = getWindow() else { return nil }
+        
+        return window.rootViewController
     }
 }
 

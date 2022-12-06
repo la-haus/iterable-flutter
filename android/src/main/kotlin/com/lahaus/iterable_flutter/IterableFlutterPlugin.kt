@@ -41,6 +41,9 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
     private var isInitialized: Boolean = false
     private var pendingAppLinkUrl: String? = null
 
+    // Hold reference to MobileInboxActivity to dismiss when handling actions
+    private var mobileInboxActivity: MobileInboxActivity? = null
+
     // region FlutterPlugin
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
@@ -106,6 +109,23 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
                 IterableApi.getInstance().updateUser(JSONObject(userInfo))
                 result.success(null)
             }
+            "showMobileInbox" -> {
+                val screenTitle = call.argument<String>("screenTitle")
+                val noMessagesTitle = call.argument<String>("noMessagesTitle")
+                val noMessagesBody = call.argument<String>("noMessagesBody")
+                activity?.let { context ->
+                    val intent = Intent(context, MobileInboxActivity::class.java).apply {
+                        screenTitle?.let { putExtra("activityTitle", it) }
+                        noMessagesTitle?.let { putExtra("noMessagesTitle", it) }
+                        noMessagesBody?.let { putExtra("noMessagesBody", it) }
+                    }
+                    context.startActivity(intent)
+                }
+                result.success(null)
+            }
+            "getUnreadInboxMessagesCount" -> {
+                result.success(IterableApi.getInstance().inAppManager.unreadInboxMessagesCount)
+            }
             else -> {
                 result.notImplemented()
             }
@@ -121,6 +141,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
         val configBuilder = IterableConfig.Builder()
             .setPushIntegrationName(pushIntegrationName)
             .setAutoPushRegistration(false)
+            .setUseInMemoryStorageForInApps(true)
             .setInAppHandler {
                 IterableInAppHandler.InAppResponse.SHOW
             }
@@ -167,6 +188,10 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
             ),
             "source" to source,
         )
+
+        // Maybe dismiss mobile inbox
+        mobileInboxActivity?.finish()
+
         LogUtils.debug("notifyIterableAction with data $actionData")
         channel.invokeMethod("actionHandler", actionData)
     }
@@ -214,7 +239,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
         activity?.intent = Intent(Intent.ACTION_MAIN)
         // Handle app link in Iterable's Url Handler
         return if (isInitialized) {
-        return IterableApi.getInstance().handleAppLink(url)
+            return IterableApi.getInstance().handleAppLink(url)
         } else {
             pendingAppLinkUrl = url
             true
@@ -232,6 +257,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
 
     // region ActivityAware: handle Intent for App Links
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        LogUtils.debug("onAttachedToActivity called: ${binding.activity}")
         binding.activity.let {
             this.activity = it
             it.application.registerActivityLifecycleCallbacks(this)
@@ -244,7 +270,9 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
     }
 
     override fun onDetachedFromActivity() {
+        LogUtils.debug("onDetachedFromActivity called")
         activityPluginBinding?.removeOnNewIntentListener(this)
+        this.activity?.application?.unregisterActivityLifecycleCallbacks(this)
         this.activity = null
     }
 
@@ -258,10 +286,15 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
     override fun onNewIntent(intent: Intent): Boolean = handleIntent(intent)
     // endregion
 
-    // region Application.ActivityLifecycleCallbacks: handle Intent for App Links
+    // region Application.ActivityLifecycleCallbacks:
+    // - handle Intent for App Links
+    // - dismiss mobile inbox to handle url/actions
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        LogUtils.debug("onActivityCreated called")
+        LogUtils.debug("onActivityCreated called: $activity")
         handleIntent(activity.intent)
+        if (activity is MobileInboxActivity) {
+            mobileInboxActivity = activity
+        }
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -285,7 +318,10 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        activity.application.unregisterActivityLifecycleCallbacks(this)
+        LogUtils.debug("onActivityDestroyed called: $activity")
+        if (activity is MobileInboxActivity) {
+            mobileInboxActivity = null
+        }
     }
     // endregion
     // endregion
