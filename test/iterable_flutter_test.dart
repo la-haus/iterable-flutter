@@ -14,6 +14,7 @@ void main() {
   const String email = 'my@email.com';
   const String userId = '11111';
   const String event = 'my_event';
+  const Map<String, dynamic> dataFields = {'data': 'field'};
 
   const contentBody = {'testKey': "Test body push"};
   const keyBody = "additionalData";
@@ -86,7 +87,19 @@ void main() {
   test('track', () async {
     await IterableFlutter.track(event);
     expect(calledMethod, <Matcher>[
-      isMethodCall('track', arguments: event),
+      isMethodCall('track', arguments: {
+        "event": event,
+        "dataFields": null,
+      }),
+    ]);
+  });
+  test('track with dataFields', () async {
+    await IterableFlutter.track(event, dataFields: dataFields);
+    expect(calledMethod, <Matcher>[
+      isMethodCall('track', arguments: {
+        "event": event,
+        "dataFields": dataFields,
+      }),
     ]);
   });
 

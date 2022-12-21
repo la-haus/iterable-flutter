@@ -22,7 +22,6 @@ To use this plugin, add `iterable_flutter` as a [dependency in your pubspec.yaml
 | `updateUser` | X | X | | | | |
 | `signOut` | X | X | | | | |
 | `track` | X | X | | | | |
-| `trackWithDataFields` | X | X | | | | |
 | `setNotificationOpenedHandler` | X | X | | | | |
 
 ## Installation
@@ -55,9 +54,7 @@ class _MyAppState extends State<MyApp> {
 
 4. Call `IterableFlutter.registerForPush` to register the device for current user and listen for opened pushes with `IterableFlutter.setNotificationOpenedHandler`
 
-5. Track your events, call `IterableFlutter.track` method.
-
-6. Track your events with data fields, call `IterableFlutter.trackWithDataFields` method.
+5. Track your events and optional data fields, call `IterableFlutter.track` method.
 
 ### Example
 Check the [example/](example/) folder to see an example project using this library.
