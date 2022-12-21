@@ -66,6 +66,15 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         IterableApi.getInstance().track(call.arguments as String)
         result.success(null)
       }
+      "trackWithDataFields" -> {
+        val argumentData = call.arguments as? Map<*, *>
+        
+        val event = argumentData?.get("event") as String
+        val dataFields = argumentData["dataFields"] as Map<*, *>
+        val dataJson = JSONObject(dataFields)
+        IterableApi.getInstance().track(event, dataJson)
+        result.success(null)
+      }
       "registerForPush" -> {
         IterableApi.getInstance().registerForPush()
         result.success(null)
