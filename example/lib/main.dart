@@ -53,8 +53,15 @@ class _MyAppState extends State<MyApp> {
     await IterableFlutter.setUserId(userId);
   }
 
-  Future<void> track(String event) async {
-    await IterableFlutter.track(event);
+  /// Include optional dataFields along with the tracked event
+  Future<void> track(
+    String event, {
+    Map<String, dynamic>? dataFields,
+  }) async {
+    await IterableFlutter.track(
+      event,
+      dataFields: dataFields,
+    );
   }
 
   Future<void> signOut() async {
@@ -137,7 +144,7 @@ class _MyAppState extends State<MyApp> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                  signOut();
+                signOut();
               },
               child: Text('Sign Out'),
             ),
