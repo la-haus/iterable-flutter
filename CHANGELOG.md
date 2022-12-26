@@ -1,3 +1,6 @@
+## 0.5.8
+- feat(Track): allow data fields params for track #61
+
 ## 0.5.7
 - build(Dependencies): update iterable android and iOS dependencies #57
 
