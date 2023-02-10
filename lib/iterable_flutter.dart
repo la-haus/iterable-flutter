@@ -47,6 +47,16 @@ class IterableFlutter {
     );
   }
 
+  static Future<void> updateEmail(String email, String jwt) async {
+    await _channel.invokeMethod(
+      'updateEmail',
+      {
+        'email': email,
+        'jwt': jwt,
+      },
+    );
+  }
+
   static Future<void> track(
     String event, {
     Map<String, dynamic>? dataFields,

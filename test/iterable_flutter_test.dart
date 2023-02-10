@@ -33,6 +33,8 @@ void main() {
           return null;
         case 'setUserId':
           return null;
+        case 'updateEmail':
+          return null;
         case 'track':
           return null;
         case 'registerForPush':
@@ -74,14 +76,21 @@ void main() {
   test('setEmail', () async {
     await IterableFlutter.setEmail(email, jwt);
     expect(calledMethod, <Matcher>[
-      isMethodCall('setEmail', arguments: email),
+      isMethodCall('setEmail', arguments: email, jwt),
     ]);
   });
 
   test('setUserId', () async {
     await IterableFlutter.setUserId(userId, jwt);
     expect(calledMethod, <Matcher>[
-      isMethodCall('setUserId', arguments: userId),
+      isMethodCall('setUserId', arguments: userId, jwt),
+    ]);
+  });
+
+  test('updateEmail', () async {
+    await IterableFlutter.updateEmail(email, jwt);
+    expect(calledMethod, <Matcher>[
+      isMethodCall('updateEmail', arguments: email, jwt),
     ]);
   });
 
