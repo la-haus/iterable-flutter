@@ -63,6 +63,12 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         IterableApi.getInstance().setUserId(userId, jwt)
         result.success(null)
       }
+      "updateEmail" -> {
+        val userEmail = call.argument<String>("email") ?: ""
+        val jwt = call.argument<String>("jwt") ?: ""
+        IterableApi.getInstance().updateEmail(userEmail, jwt)
+        result.success(null)
+      }
       "track" -> {
         val argumentData = call.arguments as? Map<*, *>
         
