@@ -50,7 +50,7 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             let email = args["email"] as! String
             let jwt = args["jwt"] as! String
             
-            IterableAPI.updateEmail(email: email, jwt: jwt, nil, nil)
+            IterableAPI.updateEmail(email: email, withToken: jwt, onSuccess: nil, onFailure: nil)
 
             result(nil)
         case "track":
