@@ -55,14 +55,12 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         val userEmail = call.argument<String>("email") ?: ""
         val jwt = call.argument<String>("jwt") ?: ""
         IterableApi.getInstance().setEmail(userEmail, jwt)
-        IterableApi.getInstance().registerForPush()
         result.success(null)
       }
       "setUserId" -> {
         val userId = call.argument<String>("userId") ?: ""
         val jwt = call.argument<String>("jwt") ?: ""
         IterableApi.getInstance().setUserId(userId, jwt)
-        IterableApi.getInstance().registerForPush()
         result.success(null)
       }
       "track" -> {
@@ -105,7 +103,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
   private fun initialize(apiKey: String, pushIntegrationName: String, activeLogDebug: Boolean) {
     val configBuilder = IterableConfig.Builder()
       .setPushIntegrationName(pushIntegrationName)
-      .setAutoPushRegistration(false)
+      .setAutoPushRegistration(true)
       .setCustomActionHandler { _, _ ->
         notifyPushNotificationOpened()
         false
