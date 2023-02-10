@@ -52,13 +52,16 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         result.success(null)
       }
       "setEmail" -> {
-        val userEmail = call.arguments as String
-        IterableApi.getInstance().setEmail(userEmail)
+        val userEmail = call.arguments<String>("email") ?: ""
+        val jwt = call.arguments<String>("jwt") ?: ""
+        IterableApi.getInstance().setEmail(userEmail, jwt)
         IterableApi.getInstance().registerForPush()
         result.success(null)
       }
       "setUserId" -> {
-        IterableApi.getInstance().setUserId(call.arguments as String)
+        val userId = call.arguments<String>("userId") ?: ""
+        val jwt = call.arguments<String>("jwt") ?: ""
+        IterableApi.getInstance().setUserId(userId, jwt)
         IterableApi.getInstance().registerForPush()
         result.success(null)
       }

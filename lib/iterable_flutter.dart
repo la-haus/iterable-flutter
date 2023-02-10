@@ -27,12 +27,24 @@ class IterableFlutter {
     _channel.setMethodCallHandler(nativeMethodCallHandler);
   }
 
-  static Future<void> setEmail(String email) async {
-    await _channel.invokeMethod('setEmail', email);
+  static Future<void> setEmail(String email, String jwt) async {
+    await _channel.invokeMethod(
+      'setEmail',
+      {
+        'email': email,
+        'jwt': jwt,
+      },
+    );
   }
 
-  static Future<void> setUserId(String userId) async {
-    await _channel.invokeMethod('setUserId', userId);
+  static Future<void> setUserId(String userId, String jwt) async {
+    await _channel.invokeMethod(
+      'setUserId',
+      {
+        'userId': userId,
+        'jwt': jwt,
+      },
+    );
   }
 
   static Future<void> track(
