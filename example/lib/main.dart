@@ -43,14 +43,14 @@ class _MyAppState extends State<MyApp> {
 
   /// Don't set an email and user ID in the same session.
   /// Doing so causes the SDK to treat them as different users.
-  Future<void> setEmail(String email) async {
-    await IterableFlutter.setEmail(email);
+  Future<void> setEmail(String email, String jwt) async {
+    await IterableFlutter.setEmail(email, jwt);
   }
 
   /// Don't set an email and user ID in the same session.
   /// Doing so causes the SDK to treat them as different users.
-  Future<void> setUserId(String userId) async {
-    await IterableFlutter.setUserId(userId);
+  Future<void> setUserId(String userId, String jwt) async {
+    await IterableFlutter.setUserId(userId, jwt);
   }
 
   /// Include optional dataFields along with the tracked event
@@ -117,7 +117,7 @@ class _MyAppState extends State<MyApp> {
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (value) {
-                  setEmail(value);
+                  setEmail(value, "");
                   track('event_tracking_ios');
                 },
                 decoration: InputDecoration(
