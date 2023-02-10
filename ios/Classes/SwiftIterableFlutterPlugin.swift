@@ -46,11 +46,11 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             result(nil)
         case "updateEmail":
             let args = getPropertiesFromArguments(call.arguments)
-            
+
             let email = args["email"] as! String
             let jwt = args["jwt"] as! String
             
-            IterableAPI.updateEmail(email: email, jwt: jwt)
+            IterableAPI.updateEmail(email: email, jwt: jwt, nil, nil)
 
             result(nil)
         case "track":
