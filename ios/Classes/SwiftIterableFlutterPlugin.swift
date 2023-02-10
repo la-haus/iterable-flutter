@@ -32,7 +32,7 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             let email = args["email"] as! String
             let jwt = args["jwt"] as! String
             
-            IterableAPI.setEmail(email: email, jwt: jwt)
+            IterableAPI.setEmail(email: email, authToken: jwt)
 
             result(nil)
         case "setUserId":
@@ -41,7 +41,7 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             let userId = args["userId"] as! String
             let jwt = args["jwt"] as! String
             
-            IterableAPI.setUserId(email: email, jwt: jwt)
+            IterableAPI.setUserId(userId: userId, authToken: jwt)
             
             result(nil)
         case "updateEmail":
