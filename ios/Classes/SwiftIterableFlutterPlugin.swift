@@ -32,6 +32,7 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             let email = args["email"] as! String
             let jwt = args["jwt"] as! String
             
+            IterableAPI.email = email
             IterableAPI.setEmail(email, jwt)
 
             result(nil)
