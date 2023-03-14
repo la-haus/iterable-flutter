@@ -141,7 +141,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
         val configBuilder = IterableConfig.Builder()
             .setPushIntegrationName(pushIntegrationName)
             .setAutoPushRegistration(false)
-            .setUseInMemoryStorageForInApps(true)
+//            .setUseInMemoryStorageForInApps(true)
             .setInAppHandler {
                 IterableInAppHandler.InAppResponse.SHOW
             }

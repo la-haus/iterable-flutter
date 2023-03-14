@@ -4,3 +4,4 @@ example/pubspec.lock
 .dart_tool/
 .vscode
 build/
+example/.fvm/flutter_sdk
