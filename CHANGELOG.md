@@ -1,3 +1,9 @@
+## 0.6.0
+- feat(deeplinks): support app links and universal links
+- feat(deeplinks): support openUrl action
+- feat(inbox): support mobile inbox
+- feat(inbox): support custom actions
+
 ## 0.5.7
 - build(Dependencies): update iterable android and iOS dependencies #57
 
