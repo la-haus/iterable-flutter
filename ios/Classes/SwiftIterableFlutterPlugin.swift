@@ -169,12 +169,15 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
         // Maybe dismiss mobile inbox
         if mobileInboxViewController?.isViewLoaded == true {
             LogUtils.debug(message: "dismiss mobileInboxViewController")
-            getRootViewController()?.dismiss(animated: true)
+            getRootViewController()?.dismiss(animated: true) {
+                channel.invokeMethod("actionHandler", arguments: arguments)
+            }
             mobileInboxViewController = nil
+        } else {
+            channel.invokeMethod("actionHandler", arguments: arguments)
         }
         
         LogUtils.debug(message: "notifyIterableAction with data \(arguments)")
-        channel.invokeMethod("actionHandler", arguments: arguments)
     }
     
     private func getWindow() -> UIWindow? {
