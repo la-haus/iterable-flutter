@@ -9,8 +9,6 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
     
     var launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     
-    private weak var mobileInboxViewController: UIViewController? = nil
-    
     public static func register(with registrar: FlutterPluginRegistrar) {
         channel = FlutterMethodChannel(name: "iterable_flutter", binaryMessenger: registrar.messenger())
         let instance = SwiftIterableFlutterPlugin()
@@ -84,7 +82,6 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
                 
                 viewController.modalPresentationStyle = .fullScreen
                 rootViewController.present(viewController, animated: true)
-                mobileInboxViewController = viewController
             }
             result(nil)
         case "getUnreadInboxMessagesCount":
@@ -166,13 +163,12 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
             "source": source
         ]
         
-        // Maybe dismiss mobile inbox
-        if mobileInboxViewController?.isViewLoaded == true {
-            LogUtils.debug(message: "dismiss mobileInboxViewController")
+        if let presentedViewController = getRootViewController()?.presentedViewController {
+            // Dismiss presented view controller before handling action
+            LogUtils.debug(message: "Dismissing presented view controller \(presentedViewController)")
             getRootViewController()?.dismiss(animated: true) {
                 channel.invokeMethod("actionHandler", arguments: arguments)
             }
-            mobileInboxViewController = nil
         } else {
             channel.invokeMethod("actionHandler", arguments: arguments)
         }
