@@ -1,3 +1,7 @@
+## 0.6.1
+- fix(in-app): dismiss presented vc before handling action
+- chore: bump iterable native sdks to the latest version
+
 ## 0.6.0
 - feat(deeplinks): support app links and universal links
 - feat(deeplinks): support openUrl action
