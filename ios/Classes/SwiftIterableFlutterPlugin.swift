@@ -130,25 +130,21 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
     }
 
     public func notifyPushNotificationOpened(){
-        let userInfo = IterableAPI.lastPushPayload
-        
-        if(userInfo != nil){
-            let apsInfo = userInfo!["aps"] as? [String: AnyObject]
-            let alertInfo = apsInfo?["alert"] as? [String: AnyObject]
-            
-            if(alertInfo != nil){
-                
-                let payload = [
-                    "title": alertInfo?["title"] ?? "",
-                    "body": alertInfo?["body"] ?? "",
-                    "additionalData": IterableAPI.lastPushPayload!
-                ] as [String : Any]
-                
-                SwiftIterableFlutterPlugin.channel?.invokeMethod("openedNotificationHandler", arguments: payload)
-            }
-            
+        guard let userInfo = IterableAPI.lastPushPayload,
+              let apsInfo = userInfo["aps"] as? [String: AnyObject],
+              let alertInfo = apsInfo["alert"] as? [String: AnyObject]
+        else {
+            return
         }
         
-   }
+        let payload = [
+            "title": alertInfo["title"] ?? "",
+            "body": alertInfo["body"] ?? "",
+            "additionalData": IterableAPI.lastPushPayload!
+        ] as [String : Any]
+        
+        SwiftIterableFlutterPlugin.channel?.invokeMethod("openedNotificationHandler", arguments: payload)
+        
+    }
+    
 }
-
