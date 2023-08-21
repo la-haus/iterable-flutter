@@ -147,7 +147,7 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
         let payload = [
             "title": alertInfo["title"] ?? "",
             "body": alertInfo["body"] ?? "",
-            "additionalData": IterableAPI.lastPushPayload!
+            "additionalData": userInfo
         ] as [String : Any]
         
         SwiftIterableFlutterPlugin.channel?.invokeMethod("openedNotificationHandler", arguments: payload)
