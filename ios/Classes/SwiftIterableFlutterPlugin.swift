@@ -3,7 +3,7 @@ import UIKit
 import IterableSDK
 import UserNotifications
 
-public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotificationCenterDelegate, IterableCustomActionDelegate {
+public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotificationCenterDelegate, IterableCustomActionDelegate, IterableURLDelegate {
    
     static var channel: FlutterMethodChannel? = nil
     
@@ -78,6 +78,7 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
         config.pushIntegrationName = pushIntegrationName
         config.autoPushRegistration = true
         config.customActionDelegate = self
+        config.urlDelegate = self
         
         IterableAPI.initialize(apiKey: apiKey, config: config)
     }
@@ -129,6 +130,12 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
         return true;
     }
 
+    
+    public func handle(iterableURL url: URL, inContext context: IterableActionContext) -> Bool {
+        notifyPushNotificationOpened()
+        return true
+    }
+    
     public func notifyPushNotificationOpened(){
         guard let userInfo = IterableAPI.lastPushPayload,
               let apsInfo = userInfo["aps"] as? [String: AnyObject],
