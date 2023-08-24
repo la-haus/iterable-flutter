@@ -86,6 +86,10 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
             result(nil)
         case "getUnreadInboxMessagesCount":
             result(IterableAPI.inAppManager.getUnreadInboxMessagesCount())
+        case "getInboxMessages":
+            let messages = IterableAPI.inAppManager.getInboxMessages()
+            let messagesDict = messages.map { $0.description }
+            result(messagesDict)
         default:
             result(FlutterMethodNotImplemented)
         }
