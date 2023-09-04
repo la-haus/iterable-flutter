@@ -27,8 +27,10 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             
             result(nil)
         case "setEmail":
-            let email = call.arguments as! String
-            IterableAPI.email = email
+            let args = getPropertiesFromArguments(call.arguments)
+            let email = args["email"] as! String
+            let jwt = args["jwt"] as! String
+            IterableAPI.setEmail(email, jwt)
             
             result(nil)
         case "setUserId":
