@@ -1,3 +1,12 @@
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+⚠️ ⚠️
+We are no longer supporting this library. Feel free to fork it and work on your own branch.
+⚠️ ⚠️
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
 # Iterable Plugin
 [![Pub Version](https://img.shields.io/pub/v/iterable_flutter)](https://pub.dev/packages/iterable_flutter)
 [![Build](https://github.com/la-haus/iterable-flutter/actions/workflows/build.yml/badge.svg)](https://github.com/la-haus/iterable-flutter/actions/workflows/build.yml)
