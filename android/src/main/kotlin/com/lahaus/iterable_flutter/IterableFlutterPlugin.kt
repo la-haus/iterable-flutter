@@ -6,7 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.iterable.iterableapi.*
+import com.google.gson.Gson
+import com.iterable.iterableapi.IterableActionContext
+import com.iterable.iterableapi.IterableActionSource
+import com.iterable.iterableapi.IterableApi
+import com.iterable.iterableapi.IterableConfig
+import com.iterable.iterableapi.IterableConstants
+import com.iterable.iterableapi.IterableInAppHandler
+import com.iterable.iterableapi.IterableInAppMessage
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -77,38 +84,46 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
                 }
                 result.success(null)
             }
+
             "setEmail" -> {
                 val userEmail = call.arguments as String
                 IterableApi.getInstance().setEmail(userEmail)
                 IterableApi.getInstance().registerForPush()
                 result.success(null)
             }
+
             "setUserId" -> {
                 IterableApi.getInstance().setUserId(call.arguments as String)
                 IterableApi.getInstance().registerForPush()
                 result.success(null)
             }
+
             "track" -> {
                 IterableApi.getInstance().track(call.arguments as String)
                 result.success(null)
             }
+
             "registerForPush" -> {
                 IterableApi.getInstance().registerForPush()
                 result.success(null)
             }
+
             "signOut" -> {
                 IterableApi.getInstance().disablePush()
                 result.success(null)
             }
+
             "checkRecentNotification" -> {
                 notifyPushNotificationOpened()
                 result.success(null)
             }
+
             "updateUser" -> {
                 val userInfo = call.argument<Map<String, Any>?>("params")
                 IterableApi.getInstance().updateUser(JSONObject(userInfo))
                 result.success(null)
             }
+
             "showMobileInbox" -> {
                 val screenTitle = call.argument<String>("screenTitle")
                 val noMessagesTitle = call.argument<String>("noMessagesTitle")
@@ -123,14 +138,17 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
                 }
                 result.success(null)
             }
+
             "getUnreadInboxMessagesCount" -> {
                 result.success(IterableApi.getInstance().inAppManager.unreadInboxMessagesCount)
             }
+
             "getInboxMessages" -> {
                 val messages = IterableApi.getInstance().inAppManager.inboxMessages
-                val messagesDictionary = messages.map { it.content }
-                result.success(messagesDictionary)
+                val messagesJson = messages.map { inAppMessageToJson(it) }
+                result.success(messagesJson)
             }
+
             else -> {
                 result.notImplemented()
             }
@@ -181,6 +199,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
                     "push"
                 }
             }
+
             IterableActionSource.APP_LINK -> "appLink"
             IterableActionSource.IN_APP -> "inApp"
         }
@@ -330,9 +349,80 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
     }
     // endregion
     // endregion
+
+    // region InAppMessage
+
+
+    fun inAppMessageToJson(message: IterableInAppMessage): String {
+        return Gson().toJson(message)
+
+    }
+
+    // endregion
 }
 
-fun IterableInAppMessage.toJsonObject(){
-    return this.toJSON
-    
-}
+//fun IterableInAppMessage.toJsonObject() {
+//
+//    val messageJson = JSONObject()
+//    val contentJson = JSONObject()
+//    val inAppDisplaySettingsJson: JSONObject
+//    try {
+//        messageJson.putOpt(IterableConstants.KEY_MESSAGE_ID, messageId)
+//        if (campaignId != null && IterableUtil.isValidCampaignId(campaignId!!)) {
+//            messageJson.put(IterableConstants.KEY_CAMPAIGN_ID, campaignId)
+//        }
+//        if (createdAt != null) {
+//            messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_CREATED_AT, createdAt.time)
+//        }
+//        if (expiresAt != null) {
+//            messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_EXPIRES_AT, expiresAt.time)
+//        }
+//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_TRIGGER, trigger.toJSONObject())
+//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_PRIORITY_LEVEL, priorityLevel)
+//        inAppDisplaySettingsJson = IterableInAppMessage.encodePaddingRectToJson(content.padding)
+//        inAppDisplaySettingsJson.put(
+//            IterableConstants.ITERABLE_IN_APP_SHOULD_ANIMATE,
+//            content.inAppDisplaySettings.shouldAnimate
+//        )
+//        if (content.inAppDisplaySettings.inAppBgColor != null && content.inAppDisplaySettings.inAppBgColor.bgHexColor != null) {
+//            val bgColorJson = JSONObject()
+//            bgColorJson.put(
+//                IterableConstants.ITERABLE_IN_APP_BGCOLOR_ALPHA,
+//                content.inAppDisplaySettings.inAppBgColor.bgAlpha
+//            )
+//            bgColorJson.putOpt(
+//                IterableConstants.ITERABLE_IN_APP_BGCOLOR_HEX,
+//                content.inAppDisplaySettings.inAppBgColor.bgHexColor
+//            )
+//            inAppDisplaySettingsJson.put(IterableConstants.ITERABLE_IN_APP_BGCOLOR, bgColorJson)
+//        }
+//        contentJson.putOpt(
+//            IterableConstants.ITERABLE_IN_APP_DISPLAY_SETTINGS,
+//            inAppDisplaySettingsJson
+//        )
+//        if (content.backgroundAlpha != 0.0) {
+//            contentJson.putOpt(
+//                IterableConstants.ITERABLE_IN_APP_BACKGROUND_ALPHA,
+//                content.backgroundAlpha
+//            )
+//        }
+//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_CONTENT, contentJson)
+//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_CUSTOM_PAYLOAD, customPayload)
+//        if (saveToInbox != null) {
+//            messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_SAVE_TO_INBOX, saveToInbox)
+//        }
+//        if (inboxMetadata != null) {
+//            messageJson.putOpt(
+//                IterableConstants.ITERABLE_IN_APP_INBOX_METADATA,
+//                inboxMetadata!!.toJSONObject()
+//            )
+//        }
+//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_PROCESSED, processed)
+//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_CONSUMED, consumed)
+//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_READ, read)
+//    } catch (e: JSONException) {
+//        IterableLogger.e(IterableInAppMessage.TAG, "Error while serializing an in-app message", e)
+//    }
+//    return messageJson
+//}
+
