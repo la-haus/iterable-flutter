@@ -1,3 +1,6 @@
+## 0.5.9
+- Update README with no longer maintaining message
+
 ## 0.5.8
 - feat(Track): allow data fields params for track #61
 
