@@ -13,6 +13,7 @@ import com.iterable.iterableapi.IterableApi
 import com.iterable.iterableapi.IterableConfig
 import com.iterable.iterableapi.IterableConstants
 import com.iterable.iterableapi.IterableInAppHandler
+import com.iterable.iterableapi.IterableInAppLocation
 import com.iterable.iterableapi.IterableInAppMessage
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -147,6 +148,26 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
                 val messages = IterableApi.getInstance().inAppManager.inboxMessages
                 val messagesJson = messages.map { inAppMessageToJson(it) }
                 result.success(messagesJson)
+            }
+
+            "showInboxMessage" -> {
+                // Mandatory "messageId" parameter
+                val messageId = call.argument<String>("messageId")
+                // Find message from inbox
+                val message = IterableApi.getInstance().inAppManager.inboxMessages.firstOrNull {
+                    it.messageId == messageId
+                }
+                // Show message
+                message?.let {
+                    IterableApi.getInstance().inAppManager.showMessage(
+                        message,
+                        IterableInAppLocation.INBOX
+                    )
+                    result.success(true)
+                } ?: run {
+                    result.success(false)
+                }
+
             }
 
             else -> {
