@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:iterable_flutter/iterable_in_app_message.dart';
 
 typedef IterableActionHandler = void Function(
     Map<String, dynamic> openedResult);
@@ -90,9 +91,15 @@ class IterableFlutter {
     return _channel.invokeMethod<int>('getUnreadInboxMessagesCount');
   }
 
-  Future<String?> getInboxMessages() {
-    // TODO: parse model
-    return _channel.invokeMethod<String>('getInboxMessages');
+  Future<List<IterableInAppMessage>?> getInboxMessages() async {
+    final jsonMessages =
+        await _channel.invokeMethod<List<dynamic>>('getInboxMessages');
+
+    final messages = jsonMessages
+        ?.map((e) => IterableInAppMessage.fromJson(json.decode(e.toString())))
+        .toList();
+
+    return messages;
   }
 
   // ignore: use_setters_to_change_properties

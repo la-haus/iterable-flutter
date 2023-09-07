@@ -128,7 +128,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
             }
             "getInboxMessages" -> {
                 val messages = IterableApi.getInstance().inAppManager.inboxMessages
-                val messagesDictionary = messages.map { it.toString() }
+                val messagesDictionary = messages.map { it.content }
                 result.success(messagesDictionary)
             }
             else -> {
@@ -330,4 +330,9 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
     }
     // endregion
     // endregion
+}
+
+fun IterableInAppMessage.toJsonObject(){
+    return this.toJSON
+    
 }

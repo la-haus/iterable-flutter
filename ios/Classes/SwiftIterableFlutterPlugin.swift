@@ -87,9 +87,15 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
         case "getUnreadInboxMessagesCount":
             result(IterableAPI.inAppManager.getUnreadInboxMessagesCount())
         case "getInboxMessages":
+ 
             let messages = IterableAPI.inAppManager.getInboxMessages()
-            let messagesDict = messages.map { $0.description }
-            result(messagesDict)
+            let jsonEncoder = JSONEncoder()
+            jsonEncoder.dateEncodingStrategy = .millisecondsSince1970
+            let messagesJson = messages.map { try? jsonEncoder.encode($0) }
+            let messagesString : [String] = messagesJson.map { message in
+                return message != nil ?  String(data: message! , encoding: .utf8) ?? "" : ""
+            }
+            result(messagesString)
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -296,3 +302,6 @@ extension SwiftIterableFlutterPlugin: UNUserNotificationCenterDelegate {
         IterableAppIntegration.userNotificationCenter(center, didReceive: response, withCompletionHandler: completionHandler)
     }
 }
+
+
+
