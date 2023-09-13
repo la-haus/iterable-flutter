@@ -6,15 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.FragmentActivity
 import com.google.gson.Gson
-import com.iterable.iterableapi.IterableActionContext
-import com.iterable.iterableapi.IterableActionSource
-import com.iterable.iterableapi.IterableApi
-import com.iterable.iterableapi.IterableConfig
-import com.iterable.iterableapi.IterableConstants
-import com.iterable.iterableapi.IterableInAppHandler
-import com.iterable.iterableapi.IterableInAppLocation
-import com.iterable.iterableapi.IterableInAppMessage
+import com.iterable.iterableapi.*
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -24,6 +18,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.NewIntentListener
+import org.json.JSONException
 import org.json.JSONObject
 import java.util.regex.Pattern
 
@@ -146,7 +141,7 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
 
             "getInboxMessages" -> {
                 val messages = IterableApi.getInstance().inAppManager.inboxMessages
-                val messagesJson = messages.map { inAppMessageToJson(it) }
+                val messagesJson = messages.map {it.toMessagePreviewJsonObject().toString() }
                 result.success(messagesJson)
             }
 
@@ -161,13 +156,18 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
                 message?.let {
                     IterableApi.getInstance().inAppManager.showMessage(
                         message,
-                        IterableInAppLocation.INBOX
+                        false,
+                        { _ -> result.success(true)},
+                        IterableInAppLocation.IN_APP,
                     )
-                    result.success(true)
                 } ?: run {
                     result.success(false)
                 }
+            }
 
+            "dismissPresentedInboxMessage" -> {
+                val fragment = (activity as? FragmentActivity)?.supportFragmentManager?.fragments?.firstOrNull { it is IterableInAppFragmentHTMLNotification }
+                (activity as? FragmentActivity)?.supportFragmentManager?.beginTransaction()?.remove(fragment!!)?.commitAllowingStateLoss()
             }
 
             else -> {
@@ -373,77 +373,60 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, N
 
     // region InAppMessage
 
+    fun IterableInAppMessage.InboxMetadata.toJsonObject(): JSONObject {
+        val inboxMetadataJson = JSONObject()
 
-    fun inAppMessageToJson(message: IterableInAppMessage): String {
-        return Gson().toJson(message)
+        try {
+            inboxMetadataJson.putOpt(IterableConstants.ITERABLE_IN_APP_INBOX_TITLE, this.title)
+            inboxMetadataJson.putOpt(
+                IterableConstants.ITERABLE_IN_APP_INBOX_SUBTITLE,
+                this.subtitle
+            )
+            inboxMetadataJson.putOpt(IterableConstants.ITERABLE_IN_APP_INBOX_ICON, this.icon)
+        } catch (e: JSONException) {
+            IterableLogger.e("Error while serializing inbox metadata", e.toString())
+        }
+        return inboxMetadataJson;
+    }
 
+    fun IterableInAppMessage.toMessagePreviewJsonObject(): JSONObject {
+
+        val messageJson = JSONObject()
+
+        try {
+            messageJson.putOpt(IterableConstants.KEY_MESSAGE_ID, messageId)
+
+            if (createdAt != null) {
+                messageJson.putOpt(
+                    IterableConstants.ITERABLE_IN_APP_CREATED_AT,
+                    createdAt.time
+                )
+            }
+            if (expiresAt != null) {
+                messageJson.putOpt(
+                    IterableConstants.ITERABLE_IN_APP_EXPIRES_AT,
+                    expiresAt.time
+                )
+            }
+
+            if (inboxMetadata != null) {
+                messageJson.putOpt(
+                    IterableConstants.ITERABLE_IN_APP_INBOX_METADATA,
+                    inboxMetadata!!.toJsonObject()
+                )
+            }
+
+            messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_READ, this.isRead);
+
+        } catch (e: JSONException) {
+
+            IterableLogger.e("Error while serializing an in-app message", e.toString())
+        }
+        return messageJson
     }
 
     // endregion
 }
 
-//fun IterableInAppMessage.toJsonObject() {
-//
-//    val messageJson = JSONObject()
-//    val contentJson = JSONObject()
-//    val inAppDisplaySettingsJson: JSONObject
-//    try {
-//        messageJson.putOpt(IterableConstants.KEY_MESSAGE_ID, messageId)
-//        if (campaignId != null && IterableUtil.isValidCampaignId(campaignId!!)) {
-//            messageJson.put(IterableConstants.KEY_CAMPAIGN_ID, campaignId)
-//        }
-//        if (createdAt != null) {
-//            messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_CREATED_AT, createdAt.time)
-//        }
-//        if (expiresAt != null) {
-//            messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_EXPIRES_AT, expiresAt.time)
-//        }
-//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_TRIGGER, trigger.toJSONObject())
-//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_PRIORITY_LEVEL, priorityLevel)
-//        inAppDisplaySettingsJson = IterableInAppMessage.encodePaddingRectToJson(content.padding)
-//        inAppDisplaySettingsJson.put(
-//            IterableConstants.ITERABLE_IN_APP_SHOULD_ANIMATE,
-//            content.inAppDisplaySettings.shouldAnimate
-//        )
-//        if (content.inAppDisplaySettings.inAppBgColor != null && content.inAppDisplaySettings.inAppBgColor.bgHexColor != null) {
-//            val bgColorJson = JSONObject()
-//            bgColorJson.put(
-//                IterableConstants.ITERABLE_IN_APP_BGCOLOR_ALPHA,
-//                content.inAppDisplaySettings.inAppBgColor.bgAlpha
-//            )
-//            bgColorJson.putOpt(
-//                IterableConstants.ITERABLE_IN_APP_BGCOLOR_HEX,
-//                content.inAppDisplaySettings.inAppBgColor.bgHexColor
-//            )
-//            inAppDisplaySettingsJson.put(IterableConstants.ITERABLE_IN_APP_BGCOLOR, bgColorJson)
-//        }
-//        contentJson.putOpt(
-//            IterableConstants.ITERABLE_IN_APP_DISPLAY_SETTINGS,
-//            inAppDisplaySettingsJson
-//        )
-//        if (content.backgroundAlpha != 0.0) {
-//            contentJson.putOpt(
-//                IterableConstants.ITERABLE_IN_APP_BACKGROUND_ALPHA,
-//                content.backgroundAlpha
-//            )
-//        }
-//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_CONTENT, contentJson)
-//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_CUSTOM_PAYLOAD, customPayload)
-//        if (saveToInbox != null) {
-//            messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_SAVE_TO_INBOX, saveToInbox)
-//        }
-//        if (inboxMetadata != null) {
-//            messageJson.putOpt(
-//                IterableConstants.ITERABLE_IN_APP_INBOX_METADATA,
-//                inboxMetadata!!.toJSONObject()
-//            )
-//        }
-//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_PROCESSED, processed)
-//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_CONSUMED, consumed)
-//        messageJson.putOpt(IterableConstants.ITERABLE_IN_APP_READ, read)
-//    } catch (e: JSONException) {
-//        IterableLogger.e(IterableInAppMessage.TAG, "Error while serializing an in-app message", e)
-//    }
-//    return messageJson
-//}
+
 

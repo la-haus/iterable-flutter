@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:iterable_flutter/iterable_in_app_message.dart';
+import 'package:iterable_flutter/iterable_in_app_message_preview.dart';
 
 typedef IterableActionHandler = void Function(
     Map<String, dynamic> openedResult);
@@ -91,15 +91,34 @@ class IterableFlutter {
     return _channel.invokeMethod<int>('getUnreadInboxMessagesCount');
   }
 
-  Future<List<IterableInAppMessage>?> getInboxMessages() async {
+  Future<List<IterableInAppMessagePreview?>?> getInboxMessages() async {
     final jsonMessages =
         await _channel.invokeMethod<List<dynamic>>('getInboxMessages');
 
-    final messages = jsonMessages
-        ?.map((e) => IterableInAppMessage.fromJson(json.decode(e.toString())))
-        .toList();
+    final messages = jsonMessages?.map((e) {
+      try {
+        return IterableInAppMessagePreview.fromJson(json.decode(e.toString()));
+      } catch (e) {
+        return null;
+      }
+    }).toList();
 
     return messages;
+  }
+
+  Future<bool> showInboxMessage({required String messageId}) async {
+    final result = await _channel.invokeMethod(
+      'showInboxMessage',
+      {
+        'messageId': messageId,
+      },
+    );
+
+    return result;
+  }
+
+  Future<void> dismissPresentedInboxMessage() async {
+    await _channel.invokeMethod('dismissPresentedInboxMessage');
   }
 
   // ignore: use_setters_to_change_properties

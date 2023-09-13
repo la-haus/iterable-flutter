@@ -96,6 +96,22 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin {
                 return message != nil ?  String(data: message! , encoding: .utf8) ?? "" : ""
             }
             result(messagesString)
+        case "showInboxMessage":
+            
+            // Mandatory "messageId" parameter
+            let args = getPropertiesFromArguments(call.arguments)
+            
+            if let messageId = args["messageId"] as? String  ,  let iterableInAppMessage = IterableAPI.inAppManager.getMessage(withId: messageId) {
+                //Show Message
+                IterableAPI.inAppManager.show(message: iterableInAppMessage, consume: false, callback: {_ in
+                    result(true)
+                })
+            } else {
+                result(false)
+            }
+        case "dismissPresentedInboxMessage":
+            getWindow()?.rootViewController?.presentedViewController?.dismiss(animated: true)
+            
         default:
             result(FlutterMethodNotImplemented)
         }
