@@ -15,13 +15,15 @@ class IterableFlutter {
     required String apiKey,
     required String pushIntegrationName,
     bool activeLogDebug = false,
+    String? authToken = null
   }) async {
     await _channel.invokeMethod(
       'initialize',
       {
         'apiKey': apiKey,
         'pushIntegrationName': pushIntegrationName,
-        'activeLogDebug': activeLogDebug
+        'activeLogDebug': activeLogDebug,
+        'authToken': authToken
       },
     );
     _channel.setMethodCallHandler(nativeMethodCallHandler);

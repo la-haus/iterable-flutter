@@ -3,9 +3,10 @@ import UIKit
 import IterableSDK
 import UserNotifications
 
-public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotificationCenterDelegate, IterableCustomActionDelegate, IterableURLDelegate {
+public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotificationCenterDelegate, IterableCustomActionDelegate, IterableURLDelegate, IterableAuthDelegate {
    
     static var channel: FlutterMethodChannel? = nil
+    var token: String? = nil
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         channel = FlutterMethodChannel(name: "iterable_flutter", binaryMessenger: registrar.messenger())
@@ -13,6 +14,17 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
         registrar.addMethodCallDelegate(instance, channel: channel!)
         
         registrar.addApplicationDelegate(instance)
+    }
+
+    public func onAuthTokenRequested(completion: @escaping AuthTokenRetrievalHandler) {
+        print("calling onAuthTokenRequested")
+        print(token)
+        completion(token)
+    }
+
+    public func onTokenRegistrationFailed(_ reason: String?) {
+        print("token registration failed")
+        print(reason)
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -22,16 +34,18 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
             
             let apiKey = args["apiKey"] as! String
             let pushIntegrationName = args["pushIntegrationName"] as! String
-            
-            initialize(apiKey, pushIntegrationName)
+            let authToken = args["authToken"] as! String
+            initialize(apiKey, pushIntegrationName, authToken)
             
             result(nil)
         case "setEmail":
             let args = getPropertiesFromArguments(call.arguments)
             let email = args["email"] as! String
             let jwt = args["jwt"] as! String
+            print("calling IterableAPI.setEmail")
+            token = jwt
             IterableAPI.setEmail(email, jwt)
-            
+            print("finished calling IterableAPI.setEmail")
             result(nil)
         case "setUserId":
             let userId = call.arguments as! String
@@ -75,13 +89,15 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
         }
     }
     
-    private func initialize(_ apiKey: String, _ pushIntegrationName: String){
+    private func initialize(_ apiKey: String, _ pushIntegrationName: String, _ authToken: String){
+        token = authToken
         let config = IterableConfig()
         config.pushIntegrationName = pushIntegrationName
-        config.autoPushRegistration = true
+        config.autoPushRegistration = false
         config.customActionDelegate = self
         config.urlDelegate = self
-        
+        config.authDelegate = self
+        config.logDelegate = AllLogDelegate()
         IterableAPI.initialize(apiKey: apiKey, config: config)
     }
     
@@ -103,6 +119,7 @@ public class SwiftIterableFlutterPlugin: NSObject, FlutterPlugin, UNUserNotifica
     }
     
     public func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        print("~~~~~ calling IterableAPI.register")
         IterableAPI.register(token: deviceToken)
     }
     
