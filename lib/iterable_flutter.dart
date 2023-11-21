@@ -15,20 +15,28 @@ class IterableFlutter {
     required String apiKey,
     required String pushIntegrationName,
     bool activeLogDebug = false,
+    String? authToken = null
   }) async {
     await _channel.invokeMethod(
       'initialize',
       {
         'apiKey': apiKey,
         'pushIntegrationName': pushIntegrationName,
-        'activeLogDebug': activeLogDebug
+        'activeLogDebug': activeLogDebug,
+        'authToken': authToken
       },
     );
     _channel.setMethodCallHandler(nativeMethodCallHandler);
   }
 
-  static Future<void> setEmail(String email) async {
-    await _channel.invokeMethod('setEmail', email);
+  static Future<void> setEmail(String email, String jwt) async {
+    await _channel.invokeMethod(
+      'setEmail',
+      {
+        'email': email,
+        'jwt': jwt,
+      },
+    );
   }
 
   static Future<void> setUserId(String userId) async {

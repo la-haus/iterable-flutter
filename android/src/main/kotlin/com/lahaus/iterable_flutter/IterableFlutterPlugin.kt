@@ -52,9 +52,9 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         result.success(null)
       }
       "setEmail" -> {
-        val userEmail = call.arguments as String
-        IterableApi.getInstance().setEmail(userEmail)
-        IterableApi.getInstance().registerForPush()
+        val email = call.argument<String>("email") ?: ""
+        val jwt = call.argument<String>("jwt") ?: ""
+        IterableApi.getInstance().setEmail(email, jwt)
         result.success(null)
       }
       "setUserId" -> {
@@ -107,11 +107,10 @@ class IterableFlutterPlugin : FlutterPlugin, MethodCallHandler {
         notifyPushNotificationOpened()
         false
       }
-
+    
     if (activeLogDebug) {
-      configBuilder.setLogLevel(Log.DEBUG)
+      configBuilder.setLogLevel(Log.VERBOSE)
     }
-
     IterableApi.initialize(context, apiKey, configBuilder.build())
   }
 

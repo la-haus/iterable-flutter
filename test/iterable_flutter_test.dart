@@ -13,7 +13,9 @@ void main() {
   const String activeLogDebug = 'activeLogDebug';
   const String email = 'my@email.com';
   const String userId = '11111';
+  const String jwt = '';
   const String event = 'my_event';
+  const String authToken = 'authToken';
   const Map<String, dynamic> dataFields = {'data': 'field'};
 
   const contentBody = {'testKey': "Test body push"};
@@ -64,16 +66,20 @@ void main() {
         arguments: {
           apiKey: apiKey,
           pushIntegrationName: pushIntegrationName,
-          activeLogDebug: false
+          activeLogDebug: false,
+          authToken: null
         },
       ),
     ]);
   });
 
   test('setEmail', () async {
-    await IterableFlutter.setEmail(email);
+    await IterableFlutter.setEmail(email, jwt);
     expect(calledMethod, <Matcher>[
-      isMethodCall('setEmail', arguments: email),
+      isMethodCall('setEmail', arguments: {
+        "email": email,
+        "jwt": jwt
+      }),
     ]);
   });
 
