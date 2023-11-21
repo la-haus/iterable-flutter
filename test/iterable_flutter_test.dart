@@ -15,6 +15,7 @@ void main() {
   const String userId = '11111';
   const String jwt = '';
   const String event = 'my_event';
+  const String authToken = 'authToken';
   const Map<String, dynamic> dataFields = {'data': 'field'};
 
   const contentBody = {'testKey': "Test body push"};
@@ -65,7 +66,8 @@ void main() {
         arguments: {
           apiKey: apiKey,
           pushIntegrationName: pushIntegrationName,
-          activeLogDebug: false
+          activeLogDebug: false,
+          authToken: null
         },
       ),
     ]);
